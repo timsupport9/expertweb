@@ -1,0 +1,1 @@
+module.exports = { login: require("./loginController"), register: require("./registerController"), logout: require("./logoutController"), me: require("./meController"), forgotPassword: require("./forgotPasswordController"), resetPassword: require("./resetPasswordController") };
