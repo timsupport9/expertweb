@@ -1,0 +1,19 @@
+/* TEAM */
+  Organization: ExpertHub
+  Contact: hello@experthub.local
+  Location: Nairobi, Kenya
+
+/* SITE */
+  Standards: HTML5, CSS3, ES2022
+  Components: Node.js, Express, MySQL, EJS
+  Hosting: Render
+  Software: VS Code, Git
+  Language: English
+  Last update: 2026-09-17
+
+/* THANKS */
+  Everyone building something useful.
+
+/* SITE DETAILS */
+  This file is intentionally human-readable.
+  https://humanstxt.org/

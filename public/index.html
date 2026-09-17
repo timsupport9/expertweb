@@ -1,14 +1,163 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ExpertHub — Learn. Consult. Grow.</title><meta name="description" content="ExpertHub connects learners, experts and organizations.">
-<link rel="icon" href="/assets/images/favicon.ico"><link rel="stylesheet" href="/assets/css/app.css"></head>
-<body data-page="home">
-<header class="site-header"><a class="brand" href="/"><img src="/assets/images/logo.svg" alt="ExpertHub"> <span>ExpertHub</span></a>
-<nav><a href="/courses">Courses</a><a href="/experts">Experts</a><a href="/events">Events</a><a href="/auth/login">Login</a><a class="btn btn-primary" href="/auth/register">Get started</a></nav></header>
-<main><section class="hero"><div><span class="eyebrow">LEARN · CONSULT · GROW</span><h1>Turn expertise into progress.</h1>
-<p>Access practical learning, expert consultations, events and professional support in one place.</p>
-<div class="action-row"><a class="btn btn-primary" href="/courses">Explore courses</a><a class="btn btn-secondary" href="/experts">Find an expert</a></div></div>
-<div class="hero-panel"><strong>One hub. Many possibilities.</strong><p>Learning · Consultations · Events · Corporate training</p></div></section>
-<section class="section"><h2>Built for growth</h2><div class="cards"><div class="card"><h3>Learn</h3><p>Structured courses and practical assignments.</p></div><div class="card"><h3>Consult</h3><p>Connect with experts for focused guidance.</p></div><div class="card"><h3>Participate</h3><p>Join events, webinars and training.</p></div></div></section></main>
-<footer class="site-footer"><p>© <span id="year"></span> ExpertHub. All rights reserved.</p></footer>
-<script src="/assets/js/app.js" defer></script><script src="/assets/js/main.js" defer></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1220" />
+
+  <title>ExpertHub — Turn expertise into progress</title>
+  <meta name="description" content="ExpertHub connects students, professionals and organizations with qualified experts for learning, consultation, events and corporate training." />
+  <meta name="author" content="ExpertHub" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ExpertHub" />
+  <meta property="og:title" content="ExpertHub — Turn expertise into progress" />
+  <meta property="og:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
+  <meta property="og:url" content="https://timbackend-ylc0.onrender.com/" />
+  <meta property="og:image" content="https://timbackend-ylc0.onrender.com/assets/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ExpertHub — Turn expertise into progress" />
+  <meta name="twitter:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
+  <meta name="twitter:image" content="https://timbackend-ylc0.onrender.com/assets/img/twitter-card.png" />
+
+  <!-- Icons & manifest -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
+  <link rel="apple-touch-icon" href="/assets/img/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
+
+  <!-- Preloads -->
+  <link rel="preload" as="style" href="/assets/css/style.css" />
+  <link rel="preload" as="image" href="/assets/img/hero.svg" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ExpertHub",
+    "url": "https://timbackend-ylc0.onrender.com/",
+    "logo": "https://timbackend-ylc0.onrender.com/assets/img/logo.svg",
+    "description": "Expert services, learning, consultation and professional development platform.",
+    "sameAs": []
+  }
+  </script>
+</head>
+<body>
+
+  <!-- =================================================================
+       Header
+       ================================================================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="ExpertHub home">
+        <img src="/assets/img/logo.svg" alt="ExpertHub" height="28" />
+      </a>
+
+      <nav aria-label="Primary">
+        <a href="/courses">Courses</a>
+        <a href="/login">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="/register">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- =================================================================
+       Main
+       ================================================================= -->
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <h1>Turn expertise into progress.</h1>
+        <p class="lede">
+          Learn from vetted experts, book focused consultations, join
+          professional events and train your team — all from one platform.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary btn-lg" href="/register">Create account</a>
+          <a class="btn btn-ghost btn-lg" href="/courses">Browse courses</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="landing-section">
+      <div class="container">
+        <div class="grid">
+          <article class="card">
+            <h3>Learn</h3>
+            <p>Structured courses with modules, lessons and assessments.</p>
+            <a href="/courses">Browse courses →</a>
+          </article>
+
+          <article class="card">
+            <h3>Consult</h3>
+            <p>Book one-to-one sessions with qualified experts.</p>
+            <a href="/login?next=/dashboard">Find an expert →</a>
+          </article>
+
+          <article class="card">
+            <h3>Participate</h3>
+            <p>Join events, webinars and live training sessions.</p>
+            <a href="/login?next=/dashboard">See events →</a>
+          </article>
+
+          <article class="card">
+            <h3>Corporate training</h3>
+            <p>Upskill teams with measurable programs and reports.</p>
+            <a href="/register?role=corporate">Request a demo →</a>
+          </article>
+
+          <article class="card">
+            <h3>Your dashboard</h3>
+            <p>Track enrollments, progress and certificates in one view.</p>
+            <a href="/dashboard">Open dashboard →</a>
+          </article>
+
+          <article class="card">
+            <h3>Open API</h3>
+            <p>Integrate ExpertHub into your own tools with a clean JSON API.</p>
+            <a href="/api/health" target="_blank" rel="noopener">Explore API →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =================================================================
+       Footer
+       ================================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <span>&copy; <span id="year">2026</span> ExpertHub</span>
+      <span aria-hidden="true">·</span>
+      <a href="/courses">Courses</a>
+      <span aria-hidden="true">·</span>
+      <a href="/api/health" target="_blank" rel="noopener">API</a>
+      <span aria-hidden="true">·</span>
+      <a href="/login">Sign in</a>
+      <span aria-hidden="true">·</span>
+      <a href="/register">Get started</a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="/assets/js/app.js" defer></script>
+</body>
+</html>

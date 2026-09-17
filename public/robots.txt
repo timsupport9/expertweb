@@ -1,3 +1,32 @@
+# ExpertHub — robots.txt
+# Reference: https://www.robotstxt.org/robotstxt.html
+
 User-agent: *
 Allow: /
-Sitemap: /sitemap.xml
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /uploads/private/
+Disallow: /uploads/temp/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /downloads/
+
+# Block aggressive SEO crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+Disallow: /
+
+User-agent: SemrushBot
+Crawl-delay: 10
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap
+Sitemap: https://timbackend-ylc0.onrender.com/sitemap.xml

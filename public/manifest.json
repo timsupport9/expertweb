@@ -1,0 +1,17 @@
+{
+  "name": "ExpertHub",
+  "short_name": "ExpertHub",
+  "description": "Expert services, learning, consultation and professional development platform.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    {
+      "src": "/assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
