@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <defs>
+    <pattern id="eh-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0 H0 V60" fill="none" stroke="rgba(230,236,255,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="60" height="60" fill="url(#eh-grid)"/>
+</svg>

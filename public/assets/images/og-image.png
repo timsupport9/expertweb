@@ -1,0 +1,34 @@
+public/assets/img/
+├── logo.svg
+├── logo-dark.svg
+├── logo-light.svg
+├── favicon.svg
+├── hero.svg
+├── placeholder.svg
+├── og-image.svg            (source for og-image.png)
+├── twitter-card.svg        (source for twitter-card.png)
+│
+├── icons/
+│   ├── student.svg
+│   ├── expert.svg
+│   ├── corporate.svg
+│   ├── admin.svg
+│   ├── course.svg
+│   ├── event.svg
+│   ├── webinar.svg
+│   ├── certificate.svg
+│   ├── badge.svg
+│   ├── payment.svg
+│   ├── chat.svg
+│   └── notification.svg
+│
+├── illustrations/
+│   ├── empty-state.svg
+│   ├── not-found.svg
+│   ├── server-error.svg
+│   └── success.svg
+│
+└── backgrounds/
+    ├── hero-pattern.svg
+    ├── grid.svg
+    └── gradient.svg

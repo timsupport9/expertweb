@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"
+     role="img" aria-label="Chat" fill="none" stroke="currentColor"
+     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M28 20 A3 3 0 0 1 25 23 H12 L6 28 V7 A3 3 0 0 1 9 4 H25 A3 3 0 0 1 28 7 Z"/>
+  <circle cx="12" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+  <circle cx="17" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+  <circle cx="22" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32"
+     role="img" aria-label="Course" fill="none" stroke="currentColor"
+     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 8 H24 V26 A2 2 0 0 1 22 28 H8 A2 2 0 0 1 6 26 Z"/>
+  <path d="M10 8 V4 A2 2 0 0 1 12 2 H20 A2 2 0 0 1 22 4 V8"/>
+  <path d="M11 15 H21 M11 20 H21 M11 25 H17"/>
+</svg>

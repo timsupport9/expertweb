@@ -1,0 +1,9 @@
+# Install (one-time)
+# macOS:        brew install imagemagick
+# Debian/Ubuntu: sudo apt install imagemagick
+# Windows:      choco install imagemagick
+
+cd public/assets/img
+
+convert -background none -density 144 og-image.svg -resize 1200x630 og-image.png
+convert -background none -density 144 twitter-card.svg -resize 1200x600 twitter-card.png
