@@ -1,0 +1,1 @@
+document.addEventListener('submit',async e=>{const f=e.target;if(!f.matches('[data-auth-form]'))return;e.preventDefault();try{const data=Object.fromEntries(new FormData(f));const r=await api('/auth/login',{method:'POST',body:JSON.stringify(data)});if(r.token)ExpertHub.setToken(r.token);location.href='/';}catch(err){alert(err.message)}});

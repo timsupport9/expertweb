@@ -1,0 +1,1 @@
+window.registerForEvent=id=>api('/events/'+id+'/register',{method:'POST'});

@@ -1,0 +1,1 @@
+window.loadDashboard=role=>api('/'+role+'/dashboard');

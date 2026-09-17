@@ -1,0 +1,1 @@
+require('http').get(`http://localhost:${process.env.PORT||3000}/health`,r=>{console.log('HTTP',r.statusCode);process.exit(r.statusCode===200?0:1)}).on('error',e=>{console.error(e.message);process.exit(1)});

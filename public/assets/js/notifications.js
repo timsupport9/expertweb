@@ -1,0 +1,1 @@
+window.markNotificationRead=id=>api('/notifications/'+id+'/read',{method:'POST'});

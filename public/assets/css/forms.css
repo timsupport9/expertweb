@@ -1,0 +1,1 @@
+label{display:grid;gap:7px;font-weight:650;margin-bottom:16px}input,textarea,select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--text)}textarea{min-height:130px;resize:vertical}.form-card{max-width:620px;margin:auto;width:100%}

@@ -1,0 +1,1 @@
+window.joinWebinar=id=>location.href='/webinars/'+id;

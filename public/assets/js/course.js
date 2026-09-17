@@ -1,0 +1,1 @@
+window.loadCourse=id=>api('/courses/'+id);

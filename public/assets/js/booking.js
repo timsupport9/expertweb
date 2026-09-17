@@ -1,0 +1,1 @@
+window.bookAppointment=data=>api('/appointments',{method:'POST',body:JSON.stringify(data)});

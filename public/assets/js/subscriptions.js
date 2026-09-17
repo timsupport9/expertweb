@@ -1,0 +1,1 @@
+window.subscribe=plan=>api('/subscriptions',{method:'POST',body:JSON.stringify({plan})});

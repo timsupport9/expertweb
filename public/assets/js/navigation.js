@@ -1,0 +1,1 @@
+document.addEventListener('click',e=>{const a=e.target.closest('[data-toggle]');if(a){const el=document.querySelector(a.dataset.toggle);if(el)el.classList.toggle('hidden')}});

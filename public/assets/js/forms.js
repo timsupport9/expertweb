@@ -1,0 +1,1 @@
+document.addEventListener('submit',e=>{if(e.target.matches('[data-validate-form]')&&!e.target.checkValidity()){e.preventDefault();e.target.reportValidity()}});

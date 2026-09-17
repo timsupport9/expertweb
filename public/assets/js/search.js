@@ -1,0 +1,1 @@
+window.ExpertHubSearch=function(q){return api('/search?q='+encodeURIComponent(q))};

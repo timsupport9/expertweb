@@ -1,0 +1,1 @@
+window.ExpertHub={apiBase:'/api',getToken(){return localStorage.getItem('accessToken')},setToken(t){localStorage.setItem('accessToken',t)},clearToken(){localStorage.removeItem('accessToken')}};document.addEventListener('DOMContentLoaded',()=>{const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYear();});

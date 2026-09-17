@@ -1,0 +1,1 @@
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat{padding:20px;background:#fff;border:1px solid var(--border);border-radius:12px}.stat strong{font-size:1.8rem}@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr)}}

@@ -1,0 +1,1 @@
+window.markLessonComplete=id=>api('/learning/lessons/'+id+'/complete',{method:'POST'});

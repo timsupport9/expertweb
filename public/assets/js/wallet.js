@@ -1,0 +1,1 @@
+window.loadWallet=()=>api('/wallet');

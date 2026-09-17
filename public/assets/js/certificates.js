@@ -1,0 +1,1 @@
+window.verifyCertificate=code=>api('/certificates/verify/'+encodeURIComponent(code));

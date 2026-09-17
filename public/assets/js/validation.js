@@ -1,0 +1,1 @@
+window.validateForm=f=>{if(!f.checkValidity()){f.reportValidity();return false}return true};

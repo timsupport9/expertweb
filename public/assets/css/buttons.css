@@ -1,0 +1,1 @@
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:11px 17px;cursor:pointer;font-weight:750}.btn-primary{background:var(--primary);color:#fff!important}.btn-primary:hover{background:var(--primary-dark)}.btn-secondary{background:#eef2f6;color:var(--text)!important}.btn-small{padding:7px 11px;font-size:.85rem}

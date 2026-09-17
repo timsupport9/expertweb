@@ -1,0 +1,1 @@
+window.submitQuiz=(id,data)=>api('/quizzes/'+id+'/attempts',{method:'POST',body:JSON.stringify(data)});

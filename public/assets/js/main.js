@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('[data-page]').forEach(el=>el.dataset.ready='true'));

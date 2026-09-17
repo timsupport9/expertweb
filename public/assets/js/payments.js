@@ -1,0 +1,1 @@
+window.startPayment=data=>api('/payments',{method:'POST',body:JSON.stringify(data)});

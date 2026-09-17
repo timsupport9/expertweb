@@ -1,0 +1,1 @@
+.modal{position:fixed;inset:0;background:rgba(16,24,40,.55);display:none;align-items:center;justify-content:center;padding:20px}.modal.is-open{display:flex}.modal-dialog{background:#fff;border-radius:16px;max-width:620px;width:100%;padding:24px}

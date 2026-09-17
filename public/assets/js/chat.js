@@ -1,0 +1,1 @@
+window.sendMessage=(conversationId,message)=>api('/messages',{method:'POST',body:JSON.stringify({conversationId,message})});

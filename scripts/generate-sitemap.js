@@ -1,0 +1,1 @@
+const fs=require('fs');const urls=['/','/courses','/experts','/events','/webinars','/resources','/blog','/contact'];const body=urls.map(u=>`<url><loc>${u}</loc></url>`).join('');fs.writeFileSync('public/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${body}</urlset>`);console.log('Sitemap generated.');

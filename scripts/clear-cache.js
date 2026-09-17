@@ -1,0 +1,1 @@
+const fs=require('fs');for(const d of ['storage/cache','storage/sessions']){fs.mkdirSync(d,{recursive:true});for(const f of fs.readdirSync(d))fs.rmSync(`${d}/${f}`,{recursive:true,force:true});}console.log('Cache and session storage cleared.');

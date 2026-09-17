@@ -1,0 +1,1 @@
+window.submitAssignment=(id,data)=>api('/assignments/'+id+'/submit',{method:'POST',body:JSON.stringify(data)});
