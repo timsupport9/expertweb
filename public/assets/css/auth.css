@@ -1,0 +1,287 @@
+Login, register, forgot/reset password pages.
+
+/* ------------------------------------------------------------------  
+   ExpertHub — auth.css  
+   Login, register, forgot-password, reset-password.  
+   ------------------------------------------------------------------ */  
+  
+.auth-shell {  
+  min-height: 100vh;  
+  display: grid;  
+  grid-template-columns: 1fr 1fr;  
+  background: var(--bg);  
+}  
+  
+/* Left: form column */  
+.auth-form-col {  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  justify-content: center;  
+  padding: var(--s-10) var(--s-6);  
+}  
+  
+.auth-header {  
+  width: 100%;  
+  max-width: 420px;  
+  margin-bottom: var(--s-8);  
+}  
+  
+.auth-header .brand {  
+  margin-bottom: var(--s-8);  
+}  
+  
+/* Right: visual column */  
+.auth-visual-col {  
+  background: linear-gradient(160deg, var(--accent-soft), var(--purple-soft));  
+  display: grid;  
+  place-items: center;  
+  padding: var(--s-10);  
+  position: relative;  
+  overflow: hidden;  
+}  
+  
+.auth-visual-col::before {  
+  content: "";  
+  position: absolute;  
+  inset: 0;  
+  background-image:  
+    radial-gradient(60% 60% at 30% 30%, rgba(76, 141, 255, 0.2), transparent 70%),  
+    radial-gradient(50% 50% at 80% 70%, rgba(143, 109, 255, 0.18), transparent 70%);  
+  filter: blur(20px);  
+  pointer-events: none;  
+}  
+  
+.auth-visual-inner {  
+  position: relative;  
+  z-index: 1;  
+  max-width: 400px;  
+  text-align: center;  
+}  
+  
+.auth-visual-inner img {  
+  margin: 0 auto var(--s-6);  
+  max-width: 100%;  
+}  
+  
+.auth-visual-inner h2 {  
+  margin-bottom: var(--s-3);  
+}  
+  
+.auth-visual-inner p {  
+  color: var(--muted);  
+  font-size: 1.05rem;  
+}  
+  
+.auth-visual-inner ul {  
+  list-style: none;  
+  padding: 0;  
+  margin: var(--s-6) 0 0;  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-3);  
+  text-align: left;  
+}  
+  
+.auth-visual-inner li {  
+  display: flex;  
+  align-items: flex-start;  
+  gap: var(--s-3);  
+  color: var(--fg);  
+  font-size: 0.95rem;  
+}  
+  
+.auth-visual-inner li::before {  
+  content: "✓";  
+  color: var(--ok);  
+  font-weight: 700;  
+  flex-shrink: 0;  
+  width: 20px;  
+  height: 20px;  
+  display: inline-grid;  
+  place-items: center;  
+  background: var(--ok-soft);  
+  border-radius: 50%;  
+  font-size: 0.75rem;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Auth card (centered layout, used on simple pages)  
+   ------------------------------------------------------------------ */  
+  
+.auth-card {  
+  width: 100%;  
+  max-width: 420px;  
+  margin: 0 auto;  
+  background: var(--panel);  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius);  
+  padding: var(--s-8);  
+}  
+  
+.auth-card h1 {  
+  margin: 0 0 var(--s-3);  
+  font-size: var(--text-2xl);  
+  text-align: center;  
+}  
+  
+.auth-card .subhead {  
+  text-align: center;  
+  color: var(--muted);  
+  font-size: 0.95rem;  
+  margin-bottom: var(--s-6);  
+}  
+  
+.auth-card .stack {  
+  margin-bottom: var(--s-5);  
+}  
+  
+.auth-card .auth-footer {  
+  text-align: center;  
+  color: var(--muted);  
+  font-size: 0.9rem;  
+  padding-top: var(--s-5);  
+  border-top: 1px solid var(--line);  
+}  
+  
+.auth-card .auth-footer a {  
+  color: var(--accent);  
+  font-weight: 500;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Password toggle wrapper  
+   ------------------------------------------------------------------ */  
+  
+.password-wrap {  
+  position: relative;  
+}  
+  
+.password-wrap input {  
+  padding-right: 4rem;  
+}  
+  
+.password-toggle {  
+  position: absolute;  
+  right: var(--s-2);  
+  top: 50%;  
+  transform: translateY(-50%);  
+  background: none;  
+  border: none;  
+  color: var(--muted);  
+  font-size: 0.8rem;  
+  font-weight: 600;  
+  padding: var(--s-2);  
+  cursor: pointer;  
+  text-transform: uppercase;  
+  letter-spacing: 0.05em;  
+}  
+  
+.password-toggle:hover {  
+  color: var(--accent);  
+}  
+  
+/* ------------------------------------------------------------------  
+   Role picker (register page)  
+   ------------------------------------------------------------------ */  
+  
+.role-picker {  
+  display: grid;  
+  grid-template-columns: repeat(3, 1fr);  
+  gap: var(--s-2);  
+}  
+  
+.role-picker input[type="radio"] {  
+  position: absolute;  
+  opacity: 0;  
+  pointer-events: none;  
+}  
+  
+.role-picker label {  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  gap: var(--s-2);  
+  padding: var(--s-3);  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius-sm);  
+  cursor: pointer;  
+  text-align: center;  
+  transition:  
+    border-color var(--t-fast),  
+    background var(--t-fast);  
+  font-size: 0.85rem;  
+  color: var(--muted);  
+}  
+  
+.role-picker label:hover {  
+  border-color: var(--line-strong);  
+  background: var(--panel);  
+}  
+  
+.role-picker input[type="radio"]:checked + label {  
+  border-color: var(--accent);  
+  background: var(--accent-soft);  
+  color: var(--accent);  
+  font-weight: 600;  
+}  
+  
+.role-picker svg {  
+  width: 24px;  
+  height: 24px;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Divider with text  
+   ------------------------------------------------------------------ */  
+  
+.auth-divider {  
+  display: flex;  
+  align-items: center;  
+  gap: var(--s-3);  
+  margin: var(--s-6) 0;  
+  color: var(--muted-2);  
+  font-size: 0.8rem;  
+  text-transform: uppercase;  
+  letter-spacing: 0.08em;  
+}  
+  
+.auth-divider::before,  
+.auth-divider::after {  
+  content: "";  
+  flex: 1;  
+  height: 1px;  
+  background: var(--line);  
+}  
+  
+/* ------------------------------------------------------------------  
+   Responsive  
+   ------------------------------------------------------------------ */  
+  
+@media (max-width: 900px) {  
+  .auth-shell {  
+    grid-template-columns: 1fr;  
+  }  
+  
+  .auth-visual-col {  
+    display: none;  
+  }  
+  
+  .auth-form-col {  
+    padding: var(--s-8) var(--s-5);  
+  }  
+}  
+  
+@media (max-width: 480px) {  
+  .auth-card {  
+    padding: var(--s-6);  
+  }  
+  
+  .role-picker {  
+    grid-template-columns: 1fr;  
+  }  
+}
+
+
+---
+
