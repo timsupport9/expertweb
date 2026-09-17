@@ -1,1 +1,303 @@
-.page-shell{max-width:1180px;margin:auto;padding:48px 20px}.page-heading{display:flex;justify-content:space-between;gap:24px;margin-bottom:28px}.content-grid{display:grid;grid-template-columns:1fr;gap:20px}.section{max-width:1180px;margin:auto;padding:56px 20px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+Page shell — header, container, main, footer, hero, landing sections.
+
+/* ------------------------------------------------------------------  
+   ExpertHub — layout.css  
+   Page shell: header, container, main, footer, hero, sections.  
+   ------------------------------------------------------------------ */  
+  
+/* ------------------------------------------------------------------  
+   Container  
+   ------------------------------------------------------------------ */  
+  
+.container {  
+  width: 100%;  
+  max-width: var(--container-max);  
+  margin: 0 auto;  
+  padding: 0 var(--s-5);  
+}  
+  
+.container-narrow {  
+  max-width: var(--container-narrow);  
+}  
+  
+.container-wide {  
+  max-width: var(--container-wide);  
+}  
+  
+/* ------------------------------------------------------------------  
+   Header  
+   ------------------------------------------------------------------ */  
+  
+.site-header {  
+  position: sticky;  
+  top: 0;  
+  z-index: var(--z-header);  
+  background: var(--bg-overlay);  
+  backdrop-filter: blur(10px);  
+  -webkit-backdrop-filter: blur(10px);  
+  border-bottom: 1px solid var(--line);  
+}  
+  
+.header-inner {  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+  gap: var(--s-4);  
+  height: var(--header-height);  
+}  
+  
+.brand {  
+  display: inline-flex;  
+  align-items: center;  
+  gap: var(--s-2);  
+  font-weight: 700;  
+  font-size: 1.2rem;  
+  color: var(--fg);  
+  text-decoration: none;  
+  letter-spacing: -0.01em;  
+  flex-shrink: 0;  
+}  
+  
+.brand:hover {  
+  color: var(--fg);  
+  text-decoration: none;  
+}  
+  
+.brand img {  
+  height: 28px;  
+  width: auto;  
+  display: block;  
+}  
+  
+.brand span {  
+  display: inline-block;  
+}  
+  
+/* Primary nav inside header */  
+  
+.site-header nav {  
+  display: flex;  
+  align-items: center;  
+  gap: var(--s-5);  
+  flex-wrap: wrap;  
+}  
+  
+.site-header nav a {  
+  color: var(--muted);  
+  font-size: 0.95rem;  
+  text-decoration: none;  
+  transition: color var(--t-fast);  
+}  
+  
+.site-header nav a:hover {  
+  color: var(--fg);  
+  text-decoration: none;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Main  
+   ------------------------------------------------------------------ */  
+  
+main {  
+  display: block;  
+}  
+  
+main.container {  
+  padding-top: var(--s-8);  
+  padding-bottom: var(--s-16);  
+}  
+  
+/* ------------------------------------------------------------------  
+   Hero  
+   ------------------------------------------------------------------ */  
+  
+.hero {  
+  padding: var(--s-16) 0 var(--s-12);  
+}  
+  
+.hero h1 {  
+  font-size: clamp(2rem, 5vw, 3.5rem);  
+  line-height: 1.05;  
+  letter-spacing: -0.025em;  
+  margin: 0 0 var(--s-5);  
+  max-width: 720px;  
+}  
+  
+.hero h1 em {  
+  font-style: normal;  
+  background: linear-gradient(90deg, var(--accent), var(--purple));  
+  -webkit-background-clip: text;  
+  background-clip: text;  
+  color: transparent;  
+}  
+  
+.lede {  
+  color: var(--muted);  
+  font-size: 1.15rem;  
+  line-height: var(--leading-snug);  
+  max-width: 640px;  
+  margin: 0 0 var(--s-8);  
+}  
+  
+.cta {  
+  display: flex;  
+  gap: var(--s-3);  
+  flex-wrap: wrap;  
+  align-items: center;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Landing sections  
+   ------------------------------------------------------------------ */  
+  
+.landing-section {  
+  padding: var(--s-16) 0;  
+  border-top: 1px solid var(--line);  
+}  
+  
+.landing-section:first-of-type {  
+  border-top: none;  
+}  
+  
+.section-head {  
+  max-width: 720px;  
+  margin-bottom: var(--s-10);  
+}  
+  
+.section-head h2 {  
+  margin-bottom: var(--s-4);  
+}  
+  
+.section-head p {  
+  color: var(--muted);  
+  font-size: 1.05rem;  
+  margin: 0;  
+}  
+  
+.kicker {  
+  color: var(--accent);  
+  font-size: 0.8rem;  
+  font-weight: 700;  
+  letter-spacing: 0.1em;  
+  text-transform: uppercase;  
+  margin-bottom: var(--s-3);  
+  display: block;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Footer  
+   ------------------------------------------------------------------ */  
+  
+.footer {  
+  border-top: 1px solid var(--line);  
+  padding: var(--s-6) 0;  
+  color: var(--muted);  
+  font-size: 0.85rem;  
+  margin-top: var(--s-16);  
+}  
+  
+.footer .container {  
+  display: flex;  
+  align-items: center;  
+  justify-content: center;  
+  flex-wrap: wrap;  
+  gap: var(--s-3);  
+}  
+  
+.footer a {  
+  color: var(--muted);  
+  text-decoration: none;  
+}  
+  
+.footer a:hover {  
+  color: var(--fg);  
+  text-decoration: none;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Grid helpers  
+   ------------------------------------------------------------------ */  
+  
+.grid {  
+  display: grid;  
+  gap: var(--s-4);  
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));  
+  margin-top: var(--s-6);  
+}  
+  
+.grid-2 {  
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));  
+}  
+  
+.grid-3 {  
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));  
+}  
+  
+/* ------------------------------------------------------------------  
+   Sidebar layout (admin, dashboard)  
+   ------------------------------------------------------------------ */  
+  
+.layout-with-sidebar {  
+  display: grid;  
+  grid-template-columns: 240px 1fr;  
+  gap: var(--s-8);  
+  align-items: flex-start;  
+}  
+  
+.layout-with-sidebar main {  
+  min-width: 0;  
+}  
+  
+/* ------------------------------------------------------------------  
+   Responsive  
+   ------------------------------------------------------------------ */  
+  
+@media (max-width: 900px) {  
+  .layout-with-sidebar {  
+    grid-template-columns: 1fr;  
+    gap: var(--s-5);  
+  }  
+}  
+  
+@media (max-width: 640px) {  
+  .container {  
+    padding: 0 var(--s-4);  
+  }  
+  
+  .header-inner {  
+    gap: var(--s-3);  
+    height: 56px;  
+  }  
+  
+  .brand img {  
+    height: 24px;  
+  }  
+  
+  .site-header nav {  
+    gap: var(--s-3);  
+  }  
+  
+  .site-header nav a {  
+    font-size: 0.85rem;  
+  }  
+  
+  .hero {  
+    padding: var(--s-10) 0 var(--s-8);  
+  }  
+  
+  .landing-section {  
+    padding: var(--s-12) 0;  
+  }  
+  
+  .footer .container {  
+    flex-direction: column;  
+  }  
+  
+  .grid {  
+    grid-template-columns: 1fr;  
+  }  
+}
+
+
+---
+

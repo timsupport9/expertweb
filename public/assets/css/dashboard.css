@@ -1,1 +1,418 @@
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat{padding:20px;background:#fff;border:1px solid var(--border);border-radius:12px}.stat strong{font-size:1.8rem}@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+Role dashboards — student, expert, corporate, admin preview.
+
+/* ------------------------------------------------------------------  
+   ExpertHub — dashboard.css  
+   Role-aware dashboards for student, expert, corporate.  
+   ------------------------------------------------------------------ */  
+  
+/* ==================================================================  
+   Dashboard shell  
+   ================================================================== */  
+  
+.dashboard {  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-6);  
+}  
+  
+/* ==================================================================  
+   Welcome banner  
+   ================================================================== */  
+  
+.dashboard-welcome {  
+  padding: var(--s-8) var(--s-6);  
+  background: linear-gradient(135deg, var(--accent-soft), var(--purple-soft));  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius-lg);  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+  gap: var(--s-5);  
+  flex-wrap: wrap;  
+}  
+  
+.dashboard-welcome h1 {  
+  font-size: clamp(1.5rem, 3vw, 2rem);  
+  margin: 0 0 var(--s-2);  
+  letter-spacing: -0.02em;  
+}  
+  
+.dashboard-welcome p {  
+  color: var(--muted);  
+  margin: 0;  
+  font-size: 0.95rem;  
+}  
+  
+.dashboard-welcome .role-badge {  
+  display: inline-flex;  
+  align-items: center;  
+  gap: var(--s-2);  
+  padding: 0.35rem 0.7rem;  
+  border-radius: var(--radius-pill);  
+  background: var(--panel-2);  
+  color: var(--muted);  
+  font-size: 0.85rem;  
+  margin-left: var(--s-3);  
+  vertical-align: middle;  
+}  
+  
+.dashboard-welcome .welcome-actions {  
+  display: flex;  
+  gap: var(--s-2);  
+  flex-wrap: wrap;  
+}  
+  
+/* ==================================================================  
+   Quick stat cards  
+   ================================================================== */  
+  
+.dashboard-stats {  
+  display: grid;  
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));  
+  gap: var(--s-4);  
+}  
+  
+.dash-stat {  
+  background: var(--panel);  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius);  
+  padding: var(--s-5);  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-2);  
+  transition: border-color var(--t-fast), transform var(--t-fast);  
+}  
+  
+.dash-stat:hover {  
+  border-color: var(--line-strong);  
+  transform: translateY(-2px);  
+}  
+  
+.dash-stat .icon {  
+  width: 36px;  
+  height: 36px;  
+  display: grid;  
+  place-items: center;  
+  border-radius: var(--radius-sm);  
+  background: var(--accent-soft);  
+  color: var(--accent);  
+}  
+  
+.dash-stat .icon svg {  
+  width: 18px;  
+  height: 18px;  
+}  
+  
+.dash-stat .value {  
+  font-size: 1.75rem;  
+  font-weight: 800;  
+  line-height: 1;  
+  letter-spacing: -0.02em;  
+}  
+  
+.dash-stat .label {  
+  color: var(--muted);  
+  font-size: 0.85rem;  
+}  
+  
+/* ==================================================================  
+   Dashboard section  
+   ================================================================== */  
+  
+.dash-section {  
+  margin-top: var(--s-4);  
+}  
+  
+.dash-section-head {  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+  gap: var(--s-3);  
+  margin-bottom: var(--s-4);  
+  flex-wrap: wrap;  
+}  
+  
+.dash-section-head h2 {  
+  font-size: var(--text-lg);  
+  margin: 0;  
+}  
+  
+.dash-section-head a {  
+  font-size: 0.9rem;  
+  color: var(--accent);  
+}  
+  
+/* ==================================================================  
+   Dashboard card grid / list toggle  
+   ================================================================== */  
+  
+.dash-cards {  
+  display: grid;  
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));  
+  gap: var(--s-4);  
+}  
+  
+.dash-cards[data-view-mode="list"] {  
+  grid-template-columns: 1fr;  
+}  
+  
+.dash-cards[data-view-mode="grid"] {  
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));  
+}  
+  
+.dash-card {  
+  background: var(--panel);  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius);  
+  padding: var(--s-5);  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-3);  
+  transition: border-color var(--t-fast), background var(--t-fast);  
+}  
+  
+.dash-card:hover {  
+  border-color: var(--line-strong);  
+  background: var(--panel-2);  
+}  
+  
+.dash-card h3 {  
+  margin: 0;  
+  font-size: 1.05rem;  
+}  
+  
+.dash-card h3 a {  
+  color: var(--fg);  
+}  
+  
+.dash-card h3 a:hover {  
+  color: var(--accent);  
+  text-decoration: none;  
+}  
+  
+.dash-card p {  
+  color: var(--muted);  
+  margin: 0;  
+  font-size: 0.9rem;  
+  line-height: var(--leading-snug);  
+}  
+  
+.dash-card .meta {  
+  display: flex;  
+  gap: var(--s-2);  
+  align-items: center;  
+  flex-wrap: wrap;  
+  margin-top: auto;  
+  padding-top: var(--s-3);  
+  border-top: 1px solid var(--line);  
+}  
+  
+/* ==================================================================  
+   View toggle  
+   ================================================================== */  
+  
+.view-toggle {  
+  display: inline-flex;  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius-sm);  
+  overflow: hidden;  
+}  
+  
+.view-toggle button {  
+  padding: var(--s-2) var(--s-3);  
+  background: transparent;  
+  color: var(--muted);  
+  border: none;  
+  cursor: pointer;  
+  font-size: 0.85rem;  
+  line-height: 1;  
+  transition: background var(--t-fast), color var(--t-fast);  
+}  
+  
+.view-toggle button.is-active {  
+  background: var(--accent);  
+  color: #fff;  
+}  
+  
+.view-toggle button:not(.is-active):hover {  
+  background: var(--panel);  
+  color: var(--fg);  
+}  
+  
+/* ==================================================================  
+   Progress bar (course progress)  
+   ================================================================== */  
+  
+.progress {  
+  width: 100%;  
+  height: 6px;  
+  background: var(--panel-2);  
+  border-radius: var(--radius-pill);  
+  overflow: hidden;  
+}  
+  
+.progress-bar {  
+  height: 100%;  
+  background: linear-gradient(90deg, var(--accent), var(--purple));  
+  border-radius: var(--radius-pill);  
+  transition: width var(--t-slow);  
+}  
+  
+.progress-lg {  
+  height: 10px;  
+}  
+  
+.progress-label {  
+  display: flex;  
+  justify-content: space-between;  
+  font-size: 0.8rem;  
+  color: var(--muted);  
+  margin-bottom: var(--s-1);  
+}  
+  
+/* ==================================================================  
+   Activity feed  
+   ================================================================== */  
+  
+.activity-feed {  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-3);  
+}  
+  
+.activity-item {  
+  display: flex;  
+  gap: var(--s-3);  
+  padding: var(--s-3) 0;  
+  border-bottom: 1px solid var(--line);  
+}  
+  
+.activity-item:last-child {  
+  border-bottom: none;  
+}  
+  
+.activity-item .avatar {  
+  flex-shrink: 0;  
+}  
+  
+.activity-item .body {  
+  flex: 1;  
+  min-width: 0;  
+}  
+  
+.activity-item .body p {  
+  margin: 0 0 var(--s-1);  
+  font-size: 0.9rem;  
+}  
+  
+.activity-item .body time {  
+  font-size: 0.78rem;  
+  color: var(--muted-2);  
+}  
+  
+/* ==================================================================  
+   Progress timeline (learning path)  
+   ================================================================== */  
+  
+.timeline {  
+  position: relative;  
+  padding-left: var(--s-8);  
+  display: flex;  
+  flex-direction: column;  
+  gap: var(--s-5);  
+}  
+  
+.timeline::before {  
+  content: "";  
+  position: absolute;  
+  left: 15px;  
+  top: 8px;  
+  bottom: 8px;  
+  width: 2px;  
+  background: var(--line);  
+}  
+  
+.timeline-item {  
+  position: relative;  
+}  
+  
+.timeline-item::before {  
+  content: "";  
+  position: absolute;  
+  left: -31px;  
+  top: 4px;  
+  width: 14px;  
+  height: 14px;  
+  border-radius: 50%;  
+  background: var(--panel-2);  
+  border: 2px solid var(--line);  
+  z-index: 1;  
+}  
+  
+.timeline-item.done::before {  
+  background: var(--ok);  
+  border-color: var(--ok);  
+}  
+  
+.timeline-item.current::before {  
+  background: var(--accent);  
+  border-color: var(--accent);  
+  box-shadow: 0 0 0 4px var(--accent-soft);  
+}  
+  
+.timeline-item h4 {  
+  margin: 0 0 var(--s-1);  
+  font-size: 1rem;  
+}  
+  
+.timeline-item p {  
+  color: var(--muted);  
+  margin: 0;  
+  font-size: 0.88rem;  
+}  
+  
+/* ==================================================================  
+   Inline form toggle  
+   ================================================================== */  
+  
+[data-toggle-target][hidden] {  
+  display: none !important;  
+}  
+  
+.inline-form-card {  
+  background: var(--panel);  
+  border: 1px solid var(--line);  
+  border-radius: var(--radius);  
+  padding: var(--s-5);  
+  margin-top: var(--s-4);  
+}  
+  
+/* ==================================================================  
+   Responsive  
+   ================================================================== */  
+  
+@media (max-width: 640px) {  
+  .dashboard-welcome {  
+    padding: var(--s-6) var(--s-5);  
+    flex-direction: column;  
+    align-items: flex-start;  
+  }  
+  
+  .dashboard-stats {  
+    grid-template-columns: 1fr 1fr;  
+  }  
+  
+  .dash-cards {  
+    grid-template-columns: 1fr;  
+  }  
+}  
+  
+@media (max-width: 400px) {  
+  .dashboard-stats {  
+    grid-template-columns: 1fr;  
+  }  
+}
+
+
+---
+

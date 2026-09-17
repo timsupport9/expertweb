@@ -1,0 +1,25 @@
+Single entry point. Import order matters — tokens first, then layout, then components, then page-specific, then utilities.
+
+/* ------------------------------------------------------------------  
+   ExpertHub — style.css  
+   Single stylesheet entry point.  
+   Import order: base → layout → components → pages → utilities → print.  
+   ------------------------------------------------------------------ */  
+  
+@import url("./base.css");  
+@import url("./layout.css");  
+@import url("./components.css");  
+@import url("./auth.css");  
+@import url("./admin.css");  
+@import url("./dashboard.css");  
+@import url("./courses.css");  
+@import url("./utilities.css");  
+@import url("./print.css");
+
+> Note: @import triggers one HTTP request per file in development. For production, either concatenate these into one file at deploy time, or accept the small cost (all 10 files total under 40 KB uncompressed, under 10 KB gzipped).
+
+
+
+
+---
+
