@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -33,11 +34,14 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
 
+  <!-- CSRF token — read by /assets/js/app.js for fetch() calls -->
+  <meta name="csrf-token" content="" />
+
   <!-- Preloads -->
   <link rel="preload" as="style" href="/assets/css/style.css" />
   <link rel="preload" as="image" href="/assets/img/hero.svg" />
 
-  <!-- Styles -->
+  <!-- Styles — single entry point that imports everything -->
   <link rel="stylesheet" href="/assets/css/style.css" />
 
   <!-- Structured data -->
@@ -53,7 +57,13 @@
   }
   </script>
 </head>
-<body>
+
+<!--
+  data-page="home" tells /assets/js/app.js to auto-load
+  /assets/js/home.js if it exists. Drop a home.js in that folder and
+  it will run on this page automatically — no extra <script> tag.
+-->
+<body data-page="home">
 
   <!-- =================================================================
        Header
@@ -65,6 +75,7 @@
       </a>
 
       <nav aria-label="Primary">
+        <a href="#features">Features</a>
         <a href="/courses">Courses</a>
         <a href="/login">Sign in</a>
         <a class="btn btn-primary btn-sm" href="/register">Get started</a>
@@ -77,60 +88,315 @@
        ================================================================= -->
   <main>
 
-    <!-- Hero -->
-    <section class="hero">
+    <!-- ----------------------------------------------------------------
+         Hero
+         ---------------------------------------------------------------- -->
+    <section class="hero" data-reveal>
       <div class="container">
-        <h1>Turn expertise into progress.</h1>
+        <span class="pill pill-ok" style="display:inline-block;margin-bottom:1rem">
+          Live on Render
+        </span>
+
+        <h1>Turn expertise into <em>progress</em>.</h1>
+
         <p class="lede">
           Learn from vetted experts, book focused consultations, join
           professional events and train your team — all from one platform.
         </p>
+
         <div class="cta">
           <a class="btn btn-primary btn-lg" href="/register">Create account</a>
           <a class="btn btn-ghost btn-lg" href="/courses">Browse courses</a>
         </div>
+
+        <ul class="list list-arrow" style="margin-top:2.5rem;max-width:520px">
+          <li><span>Expert-led content</span><span class="pill pill-ok">✓</span></li>
+          <li><span>Structured learning paths</span><span class="pill pill-ok">✓</span></li>
+          <li><span>Corporate-ready programs</span><span class="pill pill-ok">✓</span></li>
+          <li><span>Session-authenticated API</span><span class="pill pill-ok">✓</span></li>
+        </ul>
       </div>
     </section>
 
-    <!-- Features -->
-    <section class="landing-section">
+    <!-- ----------------------------------------------------------------
+         Features — uses the .feature-card component and inline SVG
+         icons that inherit currentColor from the .icon wrapper.
+         ---------------------------------------------------------------- -->
+    <section class="landing-section" id="features">
       <div class="container">
-        <div class="grid">
-          <article class="card">
+        <div class="section-head" data-reveal>
+          <span class="kicker">Built for growth</span>
+          <h2>Everything you need to learn, consult and grow.</h2>
+          <p>
+            ExpertHub brings structured learning, expert guidance,
+            professional events and corporate training into one
+            coherent platform.
+          </p>
+        </div>
+
+        <div class="grid" data-reveal>
+
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8 H24 V26 A2 2 0 0 1 22 28 H8 A2 2 0 0 1 6 26 Z"/>
+                <path d="M10 8 V4 A2 2 0 0 1 12 2 H20 A2 2 0 0 1 22 4 V8"/>
+                <path d="M11 15 H21 M11 20 H21 M11 25 H17"/>
+              </svg>
+            </div>
             <h3>Learn</h3>
             <p>Structured courses with modules, lessons and assessments.</p>
-            <a href="/courses">Browse courses →</a>
+            <a class="feature-link" href="/courses">Browse courses</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="16" cy="16" r="14"/>
+                <circle cx="16" cy="13" r="3"/>
+                <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24"/>
+                <path d="M22 9 L24 11 L28 7"/>
+              </svg>
+            </div>
             <h3>Consult</h3>
-            <p>Book one-to-one sessions with qualified experts.</p>
-            <a href="/login?next=/dashboard">Find an expert →</a>
+            <p>Book one-to-one sessions with vetted professionals.</p>
+            <a class="feature-link" href="/login?next=/dashboard">Find an expert</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="8" width="24" height="20" rx="3"/>
+                <path d="M4 14 H28"/>
+                <path d="M10 4 V10 M22 4 V10"/>
+                <circle cx="12" cy="21" r="1.5" fill="currentColor" stroke="none"/>
+                <circle cx="18" cy="21" r="1.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
             <h3>Participate</h3>
             <p>Join events, webinars and live training sessions.</p>
-            <a href="/login?next=/dashboard">See events →</a>
+            <a class="feature-link" href="/login?next=/dashboard">See events</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="16" cy="16" r="14"/>
+                <rect x="9" y="14" width="14" height="11" rx="1.5"/>
+                <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14"/>
+                <path d="M14 25 V19 H18 V25"/>
+              </svg>
+            </div>
             <h3>Corporate training</h3>
             <p>Upskill teams with measurable programs and reports.</p>
-            <a href="/register?role=corporate">Request a demo →</a>
+            <a class="feature-link" href="/register?role=corporate">Request a demo</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 4 H24 V22 H8 Z"/>
+                <path d="M12 9 H20 M12 13 H20 M12 17 H17"/>
+                <circle cx="21" cy="23" r="4"/>
+                <path d="M19 26 L18 31 L21 29 L24 31 L23 26"/>
+              </svg>
+            </div>
             <h3>Your dashboard</h3>
             <p>Track enrollments, progress and certificates in one view.</p>
-            <a href="/dashboard">Open dashboard →</a>
+            <a class="feature-link" href="/dashboard">Open dashboard</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16"/>
+              </svg>
+            </div>
             <h3>Open API</h3>
-            <p>Integrate ExpertHub into your own tools with a clean JSON API.</p>
-            <a href="/api/health" target="_blank" rel="noopener">Explore API →</a>
+            <p>Integrate ExpertHub into your tools with a clean JSON API.</p>
+            <a class="feature-link" href="/api/health" target="_blank" rel="noopener">Explore API</a>
           </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------
+         Audiences — uses the .audience-card component
+         ---------------------------------------------------------------- -->
+    <section class="landing-section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="kicker">Built for you</span>
+          <h2>One platform, four roles.</h2>
+          <p>Every role gets a tailored dashboard and the right permissions for the work they do.</p>
+        </div>
+
+        <div class="grid" data-reveal>
+
+          <article class="audience-card">
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 12 L16 8 L24 12 L16 16 Z"/>
+              <path d="M11 14 V20 C11 22 13 23 16 23 C19 23 21 22 21 20 V14"/>
+            </svg>
+            <h3>Students</h3>
+            <ul>
+              <li>Enroll in expert-led courses</li>
+              <li>Track lessons, quizzes, assignments</li>
+              <li>Earn certificates and badges</li>
+            </ul>
+          </article>
+
+          <article class="audience-card">
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="16" cy="13" r="3"/>
+              <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24"/>
+              <path d="M22 9 L24 11 L28 7"/>
+            </svg>
+            <h3>Experts</h3>
+            <ul>
+              <li>Publish courses and content</li>
+              <li>Set availability and take bookings</li>
+              <li>Track earnings and reviews</li>
+            </ul>
+          </article>
+
+          <article class="audience-card">
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="14" width="14" height="11" rx="1.5"/>
+              <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14"/>
+              <path d="M14 25 V19 H18 V25"/>
+            </svg>
+            <h3>Corporate</h3>
+            <ul>
+              <li>Enroll employees in programs</li>
+              <li>Track progress across departments</li>
+              <li>Access consolidated reports</li>
+            </ul>
+          </article>
+
+          <article class="audience-card">
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8 L24 11 V16 C24 20 20 23 16 24 C12 23 8 20 8 16 V11 Z"/>
+              <path d="M12 15 L15 18 L21 12"/>
+            </svg>
+            <h3>Administrators</h3>
+            <ul>
+              <li>Manage users, roles and permissions</li>
+              <li>Publish content and monitor payments</li>
+              <li>Review audit logs and analytics</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------
+         Platform status — pings /health every 30s
+         ---------------------------------------------------------------- -->
+    <section class="landing-section" id="status" data-reveal>
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Live</span>
+          <h2>Platform status</h2>
+          <p>Backend health is checked every 30 seconds.</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-num" id="status-dot">—</span>
+            <span>Backend</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="status-time">—</span>
+            <span>Server time</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="status-env">—</span>
+            <span>Environment</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------
+         API endpoints
+         ---------------------------------------------------------------- -->
+    <section class="landing-section" data-reveal>
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Developers</span>
+          <h2>Available endpoints</h2>
+          <p>A small, predictable JSON API behind session authentication.</p>
+        </div>
+
+        <ul class="endpoint-list" style="max-width:560px">
+          <li>
+            <a href="/health" target="_blank" rel="noopener">
+              <span class="method">GET</span>
+              <span>/health</span>
+            </a>
+          </li>
+          <li>
+            <a href="/api/health" target="_blank" rel="noopener">
+              <span class="method">GET</span>
+              <span>/api/health</span>
+            </a>
+          </li>
+          <li>
+            <a href="/api/courses" target="_blank" rel="noopener">
+              <span class="method">GET</span>
+              <span>/api/courses</span>
+            </a>
+          </li>
+          <li>
+            <a href="/api/auth/me" target="_blank" rel="noopener">
+              <span class="method">GET</span>
+              <span>/api/auth/me</span>
+            </a>
+          </li>
+          <li>
+            <a href="/login">
+              <span class="method post">POST</span>
+              <span>/login</span>
+            </a>
+          </li>
+          <li>
+            <a href="/register">
+              <span class="method post">POST</span>
+              <span>/register</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------
+         Final CTA
+         ---------------------------------------------------------------- -->
+    <section class="landing-section">
+      <div class="container">
+        <div class="final-cta" data-reveal>
+          <h2>Ready to turn expertise into progress?</h2>
+          <p>
+            Create a free account and start learning, consulting or
+            training today — all from one hub.
+          </p>
+          <div class="cta">
+            <a class="btn btn-primary btn-lg" href="/register">Create account</a>
+            <a class="btn btn-ghost btn-lg" href="/login">Sign in</a>
+          </div>
         </div>
       </div>
     </section>
@@ -142,7 +408,7 @@
        ================================================================= -->
   <footer class="footer">
     <div class="container">
-      <span>&copy; <span id="year">2026</span> ExpertHub</span>
+      <span>&copy; <span data-year>2026</span> ExpertHub</span>
       <span aria-hidden="true">·</span>
       <a href="/courses">Courses</a>
       <span aria-hidden="true">·</span>
@@ -154,10 +420,84 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+  <!-- =================================================================
+       Scripts
+       =================================================================
+       app.js handles:
+         - year stamp on [data-year]
+         - flash auto-dismiss
+         - submit-button busy state
+         - CSRF token injection into fetch()
+         - reveal animation on [data-reveal]
+         - smooth scroll for #anchors
+         - external link hardening
+         - auto-load of /assets/js/<body data-page>.js
+       ================================================================= -->
   <script src="/assets/js/app.js" defer></script>
+
+  <!-- =================================================================
+       Landing-page health poller
+       =================================================================
+       Kept inline because it only runs on this page. If you'd rather
+       move it, create /assets/js/home.js with the same code — the
+       <body data-page="home"> attribute will auto-load it.
+       ================================================================= -->
+  <script>
+    (function () {
+      "use strict";
+
+      function ready(fn) {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", fn, { once: true });
+        } else {
+          fn();
+        }
+      }
+
+      ready(function () {
+        var dot  = document.getElementById("status-dot");
+        var time = document.getElementById("status-time");
+        var env  = document.getElementById("status-env");
+        if (!dot || !time || !env) return;
+
+        function check() {
+          dot.textContent = "Checking…";
+          dot.style.color = "";
+          time.textContent = "—";
+          env.textContent = "—";
+
+          fetch("/health", {
+            headers: { Accept: "application/json" },
+            cache: "no-store"
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data && data.success) {
+                dot.textContent = "Online";
+                dot.style.color = "var(--ok)";
+                time.textContent = new Date(data.time).toLocaleTimeString();
+                env.textContent = data.environment || "—";
+              } else {
+                dot.textContent = "Degraded";
+                dot.style.color = "var(--warn)";
+              }
+            })
+            .catch(function () {
+              dot.textContent = "Offline";
+              dot.style.color = "var(--danger)";
+            });
+        }
+
+        check();
+        setInterval(function () {
+          if (!document.hidden) check();
+        }, 30000);
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) check();
+        });
+      });
+    })();
+  </script>
+
 </body>
 </html>
