@@ -1,17 +1,1 @@
-module.exports = (schema) => (req, res, next) => {
-  try {
-    const result = typeof schema === "function"
-      ? schema(req)
-      : schema;
-
-    if (result === true || result == null) return next();
-
-    return res.status(422).json({
-      success: false,
-      error: "Validation failed",
-      details: result
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+module.exports=function validate(validator){if(typeof validator!=="function"&&typeof validator?.validate!=="function")throw new Error("validate() expects a function or an object with .validate()");return function validateMiddleware(req,res,next){let result;try{const run=typeof validator==="function"?validator:validator.validate.bind(validator);result=run({body:req.body,query:req.query,params:req.params});}catch(err){const e=new Error(err.message||"Validation failed");e.status=422;return next(e);}if(!result||result.errors){const err=new Error(typeof result?.errors==="string"?result.errors:"Validation failed");err.status=422;err.details=result?.errors||null;return next(err);}const value=result.value||{};if(value.body)req.body=value.body;if(value.query)req.query=value.query;if(value.params)req.params=value.params;return next();};};

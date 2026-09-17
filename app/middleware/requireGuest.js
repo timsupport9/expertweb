@@ -1,0 +1,1 @@
+module.exports=function requireGuest(){return function requireGuestMiddleware(req,res,next){if(!req.user)return next();const wantsJson=req.originalUrl.startsWith("/api/")||(req.accepts&&req.accepts("json")==="json");if(wantsJson)return res.status(409).json({success:false,error:"Already authenticated"});return res.redirect("/dashboard");};};

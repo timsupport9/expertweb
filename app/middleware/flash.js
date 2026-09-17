@@ -1,0 +1,1 @@
+module.exports=function flash(){return function flashMiddleware(req,res,next){req.flash=function flash(type,message){if(!req.session)return;req.session.flash=req.session.flash||[];req.session.flash.push({type,message});};if(req.session){res.locals.flash=req.session.flash||[];req.session.flash=[];}else res.locals.flash=[];next();};};

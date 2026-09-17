@@ -1,11 +1,2 @@
-module.exports = function csrfProtection(req, res, next) {
-  if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
-
-  const cookieToken = req.cookies?.csrf_token;
-  const headerToken = req.get("x-csrf-token");
-
-  if (!cookieToken || !headerToken || cookieToken !== headerToken) {
-    return res.status(403).json({ success: false, error: "CSRF validation failed" });
-  }
-  next();
-};
+const crypto=require("node:crypto");const SAFE_METHODS=new Set(["GET","HEAD","OPTIONS"]);const TOKEN_BYTES=32;
+module.exports=function csrf(){return function csrfMiddleware(req,res,next){if(!req.session)return next();if(!req.session.csrfToken)req.session.csrfToken=crypto.randomBytes(TOKEN_BYTES).toString("hex");res.locals.csrfToken=req.session.csrfToken;if(SAFE_METHODS.has(req.method))return next();const sent=(req.body&&req.body._csrf)||req.headers["x-csrf-token"]||req.headers["x-xsrf-token"]||"";const expected=req.session.csrfToken;const ok=typeof sent==="string"&&sent.length===expected.length&&crypto.timingSafeEqual(Buffer.from(sent),Buffer.from(expected));if(!ok){const err=new Error("Invalid CSRF token");err.status=419;return next(err);}return next();};};
