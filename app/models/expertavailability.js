@@ -4,7 +4,7 @@ class ExpertAvailability {
   }
 
   static get table() {
-    return "expert_availabilitys";
+    return "expert_availability";
   }
 
   toJSON() {

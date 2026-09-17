@@ -4,7 +4,7 @@ class Quiz {
   }
 
   static get table() {
-    return "quizs";
+    return "quizzes";
   }
 
   toJSON() {

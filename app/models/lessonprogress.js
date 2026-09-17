@@ -4,7 +4,7 @@ class LessonProgress {
   }
 
   static get table() {
-    return "lesson_progresss";
+    return "lesson_progress";
   }
 
   toJSON() {
