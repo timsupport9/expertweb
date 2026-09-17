@@ -150,7 +150,13 @@ app.get("/", (req, res, next) => {
   if (req.user) return res.redirect("/dashboard");
   next();
 });
-
+// Serve public/index.html for the exact root path.
+app.get("/", (req, res, next) => {
+  res.sendFile(
+    require("path").join(__dirname, "../../public/index.html"),
+    (err) => { if (err) next(); }
+  );
+});
 /* --------------------------------------------------------------------------
  * Landing page fallback
  * --------------------------------------------------------------------------
