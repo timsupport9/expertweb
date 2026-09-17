@@ -1,21 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const controller_login = require("../controllers/auth/loginController");
-router.get("/login", controller_login.index.bind(controller_login));
-router.get("/login/:id", controller_login.show.bind(controller_login));
-const controller_register = require("../controllers/auth/registerController");
-router.get("/register", controller_register.index.bind(controller_register));
-router.get("/register/:id", controller_register.show.bind(controller_register));
-const controller_logout = require("../controllers/auth/logoutController");
-router.get("/logout", controller_logout.index.bind(controller_logout));
-router.get("/logout/:id", controller_logout.show.bind(controller_logout));
-const controller_password = require("../controllers/auth/passwordController");
-router.get("/password", controller_password.index.bind(controller_password));
-router.get("/password/:id", controller_password.show.bind(controller_password));
-const controller_verification = require("../controllers/auth/verificationController");
-router.get("/verification", controller_verification.index.bind(controller_verification));
-router.get("/verification/:id", controller_verification.show.bind(controller_verification));
-const controller_twoFactor = require("../controllers/auth/twoFactorController");
-router.get("/twoFactor", controller_twoFactor.index.bind(controller_twoFactor));
-router.get("/twoFactor/:id", controller_twoFactor.show.bind(controller_twoFactor));
+
+const loginController = require("../controllers/auth/loginController");
+const registerController = require("../controllers/auth/registerController");
+const logoutController = require("../controllers/auth/logoutController");
+const meController = require("../controllers/auth/meController");
+const forgotPasswordController = require("../controllers/auth/forgotPasswordController");
+const resetPasswordController = require("../controllers/auth/resetPasswordController");
+
+router.post("/login", loginController);
+router.post("/register", registerController);
+router.post("/logout", logoutController);
+router.get("/logout", logoutController);
+router.get("/me", meController);
+router.post("/forgot-password", forgotPasswordController);
+router.post("/reset-password", resetPasswordController);
+
 module.exports = router;
