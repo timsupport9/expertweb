@@ -1,19 +1,22 @@
 /**
- * Express application factory.
+ * ============================================================
+ * EXPERTHUB — EXPRESS APPLICATION FACTORY
+ * ============================================================
  *
- * Wires:
- *   - Security (helmet, securityHeaders)
- *   - CORS
- *   - Body parsing & compression
- *   - Request logging
- *   - Static assets (safe subfolders only — private uploads blocked)
- *   - Conditional root redirect (signed-in → /dashboard)
- *   - Health check
- *   - Session stack (session, flash, csrf, attachUser)
- *   - Application routes
- *   - 404 + error handler (terminal)
+ * File:
+ *     app/config/app.js
  *
- * Does NOT start the HTTP server — server.js does that.
+ * Purpose:
+ *     Builds and configures the Express app.
+ *
+ * Notes:
+ *     The landing page for `/` is rendered inline here, but ALL
+ *     styles and scripts come from /assets/* — nothing is inlined.
+ *     If you later move the landing page to a controller or view
+ *     engine, delete the `app.get("/", ...)` block below and let
+ *     the controller's route take over.
+ *
+ * ============================================================
  */
 
 const path = require("path");
@@ -22,7 +25,6 @@ const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
-const session = require("express-session");
 
 const { buildHelmetOptions, securityHeaders } = require("./security");
 const buildCorsOptions = require("./cors");
@@ -37,53 +39,55 @@ const attachUser = require("../middleware/attachUser");
 
 const routes = require("../routes");
 
-const app = express();
+/* ------------------------------------------------------------------
+ * Constants
+ * ---------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
- * Core configuration
- * -------------------------------------------------------------------------- */
+const app = express();
+const isProd = (process.env.NODE_ENV || "development") === "production";
+const publicDir = path.join(__dirname, "../../public");
+
+/* ------------------------------------------------------------------
+ * 1. Core configuration
+ * ---------------------------------------------------------------- */
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
-/* --------------------------------------------------------------------------
- * Security
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 2. Security headers
+ * ---------------------------------------------------------------- */
 
 app.use(helmet(buildHelmetOptions()));
 app.use(securityHeaders);
 
-/* --------------------------------------------------------------------------
- * CORS
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 3. CORS
+ * ---------------------------------------------------------------- */
 
 app.use(cors(buildCorsOptions()));
 
-/* --------------------------------------------------------------------------
- * Body parsing & compression
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 4. Body parsing & compression
+ * ---------------------------------------------------------------- */
 
 app.use(compression());
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());
 
-/* --------------------------------------------------------------------------
- * Request logging
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 5. Request logging
+ * ---------------------------------------------------------------- */
 
 app.use(requestLogger);
 
-/* --------------------------------------------------------------------------
- * Session stack
- * --------------------------------------------------------------------------
- * Order matters. Session MUST come before flash, csrf, and attachUser.
- * -------------------------------------------------------------------------- */
-
-const isProd = (process.env.NODE_ENV || "development") === "production";
+/* ------------------------------------------------------------------
+ * 6. Session stack (session → flash → csrf → attachUser)
+ * ---------------------------------------------------------------- */
 
 app.use(
-  session({
+  require("express-session")({
     name: process.env.SESSION_NAME || "experthub.sid",
     secret:
       process.env.SESSION_SECRET || "dev-only-secret-change-me-please",
@@ -105,81 +109,92 @@ app.use(flash());
 app.use(csrf());
 app.use(attachUser());
 
-/* --------------------------------------------------------------------------
- * Static assets
- * --------------------------------------------------------------------------
- * We deliberately do NOT mount express.static on the whole public/ tree.
- * Only whitelisted subfolders are served. Everything else falls through
- * to the routes. This blocks /uploads/private/* and /uploads/temp/* from
- * ever being fetched directly.
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 7. Static assets — MUST come before the `/` handler so the
+ *    browser can reach /assets/css/style.css and /assets/js/app.js
+ * ---------------------------------------------------------------- */
 
-const publicDir = path.join(__dirname, "../../public");
+app.use(
+  "/assets",
+  express.static(path.join(publicDir, "assets"), {
+    maxAge: isProd ? "30d" : 0,
+    immutable: isProd,
+    etag: true,
+  })
+);
 
-app.use("/assets", express.static(path.join(publicDir, "assets"), {
-  maxAge: isProd ? "30d" : 0,
-  immutable: isProd,
-}));
-
-app.use("/uploads/avatars",      express.static(path.join(publicDir, "uploads/avatars")));
-app.use("/uploads/courses",      express.static(path.join(publicDir, "uploads/courses")));
-app.use("/uploads/blog",         express.static(path.join(publicDir, "uploads/blog")));
-app.use("/uploads/events",       express.static(path.join(publicDir, "uploads/events")));
-app.use("/uploads/resources",    express.static(path.join(publicDir, "uploads/resources")));
-app.use("/uploads/certificates", express.static(path.join(publicDir, "uploads/certificates")));
-
-app.use("/downloads", express.static(path.join(publicDir, "downloads")));
-
-// Block private/temp uploads explicitly.
-app.use("/uploads/private", (req, res) => res.status(404).end());
-app.use("/uploads/temp",    (req, res) => res.status(404).end());
-
-// Serve root-level static files (favicon.ico, robots.txt, sitemap.xml,
-// site.webmanifest, browserconfig.xml, humans.txt, .well-known/*) but
-// DO NOT auto-serve index.html for `/`. We handle `/` explicitly below.
-app.use(express.static(publicDir, { index: false }));
-
-/* --------------------------------------------------------------------------
- * Conditional root redirect
- * --------------------------------------------------------------------------
- *   - Guest  → serves public/index.html (landing page)
- *   - Signed → 302 to /dashboard
- * -------------------------------------------------------------------------- */
-
-app.get("/", (req, res, next) => {
-  if (req.user) return res.redirect("/dashboard");
-  next();
-});
-// Serve public/index.html for the exact root path.
-app.get("/", (req, res, next) => {
-  res.sendFile(
-    require("path").join(__dirname, "../../public/index.html"),
-    (err) => { if (err) next(); }
+// Safe upload subfolders.
+for (const sub of [
+  "avatars",
+  "courses",
+  "blog",
+  "events",
+  "resources",
+  "certificates",
+]) {
+  app.use(
+    `/uploads/${sub}`,
+    express.static(path.join(publicDir, "uploads", sub), {
+      maxAge: isProd ? "7d" : 0,
+    })
   );
-});
-/* --------------------------------------------------------------------------
- * Landing page fallback
- * --------------------------------------------------------------------------
- * If the static middleware doesn't find index.html (e.g. you deleted it),
- * send a minimal JSON response so `/` never returns a bare Express 404.
- * -------------------------------------------------------------------------- */
+}
 
-/* --------------------------------------------------------------------------
- * GET /
- * --------------------------------------------------------------------------
- *   - Signed-in users → 302 /dashboard
- *   - Guests          → full landing page (uses /assets/css + /assets/js)
+// Downloadable files.
+app.use(
+  "/downloads",
+  express.static(path.join(publicDir, "downloads"), {
+    maxAge: isProd ? "7d" : 0,
+  })
+);
+
+// Blocked upload folders.
+app.use(["/uploads/private", "/uploads/temp"], (req, res) =>
+  res.status(404).end()
+);
+
+// Root-level static files (favicon.ico, robots.txt, site.webmanifest,
+// .well-known/*, etc.). index: false so `/` is handled explicitly
+// below — we don't want the static middleware auto-serving index.html.
+app.use(
+  express.static(publicDir, {
+    index: false,
+    maxAge: isProd ? "1h" : 0,
+    etag: true,
+  })
+);
+
+/* ------------------------------------------------------------------
+ * 8. Health check
+ * ---------------------------------------------------------------- */
+
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    service: "ExpertHub",
+    status: "ok",
+    environment: process.env.NODE_ENV || "development",
+    time: new Date().toISOString(),
+  });
+});
+
+/* ------------------------------------------------------------------
+ * 9. Landing page for /
+ * ----------------------------------------------------------------
+ *   Signed-in users → 302 /dashboard.
+ *   Guests          → full landing page.
  *
- * This route renders the public landing page. All styles and scripts
- * come from public/assets/ — nothing is inline. If you later move to a
- * view engine, this whole block becomes:
- *
- *     res.render("home", { user: req.user });
- * -------------------------------------------------------------------------- */
+ *   IMPORTANT: this HTML only links to /assets/* — no inline styles
+ *   or scripts except the tiny /health poller below, which has to
+ *   stay inline because it's specific to this page.
+ * ---------------------------------------------------------------- */
 
 app.get("/", (req, res) => {
-  // Signed-in users skip the landing page and go to their dashboard.
   if (req.user) return res.redirect("/dashboard");
+
+  const user = req.user;
+  const csrfToken = req.session?.csrfToken || "";
+  const year = new Date().getFullYear();
 
   res.type("html").send(`<!doctype html>
 <html lang="en">
@@ -187,41 +202,38 @@ app.get("/", (req, res) => {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1220" />
+  <meta name="csrf-token" content="${csrfToken}" />
 
   <title>ExpertHub — Turn expertise into progress</title>
   <meta name="description" content="ExpertHub connects students, professionals and organizations with qualified experts for learning, consultation, events and corporate training." />
-  <meta name="author" content="ExpertHub" />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="ExpertHub" />
   <meta property="og:title" content="ExpertHub — Turn expertise into progress" />
   <meta property="og:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta property="og:url" content="https://timbackend-ylc0.onrender.com/" />
   <meta property="og:image" content="/assets/img/og-image.png" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ExpertHub — Turn expertise into progress" />
-  <meta name="twitter:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta name="twitter:image" content="/assets/img/twitter-card.png" />
 
   <!-- Icons & manifest -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
   <link rel="apple-touch-icon" href="/assets/img/favicon.svg" />
   <link rel="manifest" href="/site.webmanifest" />
-  <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
 
-  <!-- Styles: single entry point that @imports base, layout, components, etc. -->
+  <!-- ============================================================
+       STYLES — single entry point from public/assets/css/
+       style.css @imports base, layout, components, utilities, etc.
+       ============================================================ -->
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
+
 <body data-page="home">
 
-  <!-- =================================================================
+  <!-- ============================================================
        Header
-       ================================================================= -->
+       ============================================================ -->
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="/" aria-label="ExpertHub home">
@@ -231,15 +243,21 @@ app.get("/", (req, res) => {
       <nav aria-label="Primary">
         <a href="#features">Features</a>
         <a href="/courses">Courses</a>
-        <a href="/login">Sign in</a>
-        <a class="btn btn-primary btn-sm" href="/register">Get started</a>
+        ${user
+          ? `<a href="/dashboard">Dashboard</a>
+             <form method="post" action="/logout" class="inline">
+               <input type="hidden" name="_csrf" value="${csrfToken}" />
+               <button class="link-btn" type="submit">Sign out</button>
+             </form>`
+          : `<a href="/login">Sign in</a>
+             <a class="btn btn-primary btn-sm" href="/register">Get started</a>`}
       </nav>
     </div>
   </header>
 
-  <!-- =================================================================
+  <!-- ============================================================
        Main
-       ================================================================= -->
+       ============================================================ -->
   <main>
 
     <!-- Hero -->
@@ -248,7 +266,7 @@ app.get("/", (req, res) => {
         <span class="pill pill-ok" style="margin-bottom:1rem;display:inline-block">
           Live on Render
         </span>
-        <h1>Turn expertise into progress.</h1>
+        <h1>Turn expertise into <em>progress</em>.</h1>
         <p class="lede">
           Learn from vetted experts, book focused consultations, join
           professional events and train your team — all from one platform.
@@ -269,75 +287,97 @@ app.get("/", (req, res) => {
     <!-- Features -->
     <section class="landing-section" id="features">
       <div class="container">
-        <h2 style="margin:0 0 1.5rem">What you can do</h2>
-        <div class="grid">
+        <div class="section-head">
+          <span class="kicker">Built for growth</span>
+          <h2>What you can do</h2>
+          <p>ExpertHub brings learning, consultation and training into one platform.</p>
+        </div>
 
-          <article class="card">
+        <div class="grid">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8 H24 V26 A2 2 0 0 1 22 28 H8 A2 2 0 0 1 6 26 Z"/>
+                <path d="M10 8 V4 A2 2 0 0 1 12 2 H20 A2 2 0 0 1 22 4 V8"/>
+                <path d="M11 15 H21 M11 20 H21 M11 25 H17"/>
+              </svg>
+            </div>
             <h3>Learn</h3>
             <p>Structured courses with modules, lessons and assessments.</p>
-            <a href="/courses">Browse courses →</a>
+            <a class="feature-link" href="/courses">Browse courses</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="16" cy="16" r="14"/>
+                <circle cx="16" cy="13" r="3"/>
+                <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24"/>
+                <path d="M22 9 L24 11 L28 7"/>
+              </svg>
+            </div>
             <h3>Consult</h3>
             <p>Book one-to-one sessions with qualified experts.</p>
-            <a href="/login?next=/dashboard">Find an expert →</a>
+            <a class="feature-link" href="/login?next=/dashboard">Find an expert</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="8" width="24" height="20" rx="3"/>
+                <path d="M4 14 H28"/>
+                <path d="M10 4 V10 M22 4 V10"/>
+              </svg>
+            </div>
             <h3>Participate</h3>
             <p>Join events, webinars and live training sessions.</p>
-            <a href="/login?next=/dashboard">See events →</a>
+            <a class="feature-link" href="/login?next=/dashboard">See events</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="16" cy="16" r="14"/>
+                <rect x="9" y="14" width="14" height="11" rx="1.5"/>
+                <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14"/>
+                <path d="M14 25 V19 H18 V25"/>
+              </svg>
+            </div>
             <h3>Corporate training</h3>
             <p>Upskill teams with measurable programs and reports.</p>
-            <a href="/register?role=corporate">Request a demo →</a>
+            <a class="feature-link" href="/register?role=corporate">Request a demo</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 4 H24 V22 H8 Z"/>
+                <path d="M12 9 H20 M12 13 H20 M12 17 H17"/>
+                <circle cx="21" cy="23" r="4"/>
+                <path d="M19 26 L18 31 L21 29 L24 31 L23 26"/>
+              </svg>
+            </div>
             <h3>Your dashboard</h3>
             <p>Track enrollments, progress and certificates in one view.</p>
-            <a href="/dashboard">Open dashboard →</a>
+            <a class="feature-link" href="/dashboard">Open dashboard</a>
           </article>
 
-          <article class="card">
+          <article class="feature-card">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16"/>
+              </svg>
+            </div>
             <h3>Open API</h3>
-            <p>Integrate ExpertHub into your own tools with a clean JSON API.</p>
-            <a href="/api/health" target="_blank" rel="noopener">Explore API →</a>
+            <p>Integrate ExpertHub into your tools with a clean JSON API.</p>
+            <a class="feature-link" href="/api/health" target="_blank" rel="noopener">Explore API</a>
           </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Audiences -->
-    <section class="landing-section">
-      <div class="container">
-        <h2 style="margin:0 0 1.5rem">Built for every role</h2>
-        <div class="grid">
-
-          <article class="card">
-            <h3>Students</h3>
-            <p>Enroll in expert-led courses, track progress, earn certificates and badges.</p>
-          </article>
-
-          <article class="card">
-            <h3>Experts</h3>
-            <p>Publish courses, set availability, book consultations, manage earnings.</p>
-          </article>
-
-          <article class="card">
-            <h3>Corporate</h3>
-            <p>Enroll employees, track training progress, generate consolidated reports.</p>
-          </article>
-
-          <article class="card">
-            <h3>Administrators</h3>
-            <p>Manage users, courses, payments, subscriptions and audit logs.</p>
-          </article>
-
         </div>
       </div>
     </section>
@@ -345,7 +385,12 @@ app.get("/", (req, res) => {
     <!-- Platform status -->
     <section class="landing-section" id="status">
       <div class="container">
-        <h2 style="margin:0 0 1.5rem">Platform status</h2>
+        <div class="section-head">
+          <span class="kicker">Live</span>
+          <h2>Platform status</h2>
+          <p>Backend health is checked every 30 seconds.</p>
+        </div>
+
         <div class="stats">
           <div class="stat">
             <span class="stat-num" id="status-dot">—</span>
@@ -360,73 +405,31 @@ app.get("/", (req, res) => {
             <span>Environment</span>
           </div>
         </div>
-        <p class="muted text-sm" style="margin-top:1rem">
-          Live check against <code>/health</code> — updates every 30 seconds.
-        </p>
-      </div>
-    </section>
-
-    <!-- API endpoints -->
-    <section class="landing-section">
-      <div class="container">
-        <h2 style="margin:0 0 1.5rem">Available endpoints</h2>
-        <ul class="list">
-          <li>
-            <a href="/health" target="_blank" rel="noopener">
-              <code>GET /health</code>
-            </a>
-          </li>
-          <li>
-            <a href="/api/health" target="_blank" rel="noopener">
-              <code>GET /api/health</code>
-            </a>
-          </li>
-          <li>
-            <a href="/api/courses" target="_blank" rel="noopener">
-              <code>GET /api/courses</code>
-            </a>
-          </li>
-          <li>
-            <a href="/api/auth/me" target="_blank" rel="noopener">
-              <code>GET /api/auth/me</code>
-            </a>
-          </li>
-          <li>
-            <a href="/login">
-              <code>POST /login</code>
-            </a>
-          </li>
-          <li>
-            <a href="/register">
-              <code>POST /register</code>
-            </a>
-          </li>
-        </ul>
       </div>
     </section>
 
     <!-- Final CTA -->
     <section class="landing-section">
-      <div class="container text-center">
-        <h2 style="margin:0 0 1rem">Ready to get started?</h2>
-        <p class="lede" style="margin:0 auto 2rem">
-          Create a free account and start learning, consulting or training today.
-        </p>
-        <div class="cta" style="justify-content:center">
-          <a class="btn btn-primary btn-lg" href="/register">Create account</a>
-          <a class="btn btn-ghost btn-lg" href="/login">Sign in</a>
+      <div class="container">
+        <div class="final-cta">
+          <h2>Ready to get started?</h2>
+          <p>Create a free account and start learning, consulting or training today.</p>
+          <div class="cta" style="justify-content:center">
+            <a class="btn btn-primary btn-lg" href="/register">Create account</a>
+            <a class="btn btn-ghost btn-lg" href="/login">Sign in</a>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- =================================================================
+  <!-- ============================================================
        Footer
-       ================================================================= -->
+       ============================================================ -->
   <footer class="footer">
     <div class="container">
-      <span>© <span id="year">2026</span> ExpertHub</span>
+      <span>© <span id="year">${year}</span> ExpertHub</span>
       <span aria-hidden="true">·</span>
       <a href="/courses">Courses</a>
       <span aria-hidden="true">·</span>
@@ -438,19 +441,19 @@ app.get("/", (req, res) => {
     </div>
   </footer>
 
-  <!-- Global script. app.js handles:
-       - year stamp
-       - flash auto-dismiss
-       - submit button busy state
-       - CSRF token injection into fetch()
-       - smooth scroll for in-page anchors
-       - external link safety
-       - auto-load of /assets/js/<body data-page>.js -->
+  <!-- ============================================================
+       SCRIPTS — from public/assets/js/
+       app.js handles: year, flash dismiss, CSRF fetch, smooth
+       anchors, external link safety.
+       ============================================================ -->
   <script src="/assets/js/app.js" defer></script>
 
-  <!-- Inline script that pings /health every 30 seconds and updates
-       the three stat cells above. Kept inline so this route stays
-       self-contained. Move it to /assets/js/home.js if you prefer. -->
+  <!-- ============================================================
+       Landing-page–specific: /health poller.
+       Kept inline because it is only needed here. If you want
+       zero inline JS, move this to /assets/js/home.js and add
+       <script src="/assets/js/home.js" defer></script> above.
+       ============================================================ -->
   <script>
     (function () {
       var dot  = document.getElementById("status-dot");
@@ -486,9 +489,7 @@ app.get("/", (req, res) => {
       }
 
       check();
-      setInterval(function () {
-        if (!document.hidden) check();
-      }, 30000);
+      setInterval(function () { if (!document.hidden) check(); }, 30000);
       document.addEventListener("visibilitychange", function () {
         if (!document.hidden) check();
       });
@@ -499,18 +500,21 @@ app.get("/", (req, res) => {
 </html>`);
 });
 
-
-/* --------------------------------------------------------------------------
- * Application routes
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 10. Application routes
+ * ---------------------------------------------------------------- */
 
 app.use(routes);
 
-/* --------------------------------------------------------------------------
- * 404 + error handler (must be LAST)
- * -------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------
+ * 11. Terminal handlers — must be LAST
+ * ---------------------------------------------------------------- */
 
 app.use(notFound);
 app.use(errorHandler);
+
+/* ------------------------------------------------------------------
+ * 12. Export
+ * ---------------------------------------------------------------- */
 
 module.exports = app;
