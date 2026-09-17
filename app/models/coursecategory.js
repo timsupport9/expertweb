@@ -4,7 +4,7 @@ class CourseCategory {
   }
 
   static get table() {
-    return "course_categorys";
+    return "course_categories";
   }
 
   toJSON() {

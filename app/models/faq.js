@@ -4,7 +4,7 @@ class FAQ {
   }
 
   static get table() {
-    return "f_a_qs";
+    return "faqs";
   }
 
   toJSON() {
