@@ -13,13 +13,13 @@
   "categories": ["education", "business", "productivity"],
   "icons": [
     {
-      "src": "/assets/img/favicon.svg",
+      "src": "/assets/images/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/assets/img/favicon.svg",
+      "src": "/assets/images/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
