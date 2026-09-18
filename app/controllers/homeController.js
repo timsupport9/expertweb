@@ -171,15 +171,15 @@ class HomeController {
 
   <!-- Icons & manifest -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg" />
+  <link rel="apple-touch-icon" href="/assets/images/favicon.svg" />
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ExpertHub — Turn expertise into progress" />
   <meta property="og:description" content="Structured learning, expert consultations, events and corporate training." />
-  <meta property="og:image" content="/assets/img/og-image.png" />
+  <meta property="og:image" content="/assets/images/og-image.png" />
 
   <!-- Styles (shared system) -->
   <link rel="stylesheet" href="/assets/css/style.css" />
@@ -193,7 +193,7 @@ class HomeController {
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="/" aria-label="ExpertHub home">
-        <img src="/assets/img/logo.svg" alt="ExpertHub" height="28" />
+        <img src="/assets/images/logo.svg" alt="ExpertHub" height="28" />
       </a>
 
       <nav aria-label="Primary">
