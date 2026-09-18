@@ -6,28 +6,18 @@
  * File:
  *     app/config/app.js
  *
- * Purpose:
- *     Builds and configures the Express app.
- *
- * Responsibilities:
- *     1.  Core app config (trust proxy, no x-powered-by)
- *     2.  Security (helmet + custom headers)
- *     3.  CORS
- *     4.  Body parsing & compression
- *     5.  Request logging
- *     6.  Session stack (session → flash → csrf → attachUser)
- *     7.  Static assets (safe subfolders only)
- *     8.  Blocked paths (private/temp uploads)
- *     9.  Health check
- *     10. Landing page for /
- *     11. Application routes
- *     12. 404 + error handler (terminal)
+ * Serves:
+ *     /assets/*   →  public/assets/*
+ *     /uploads/*  →  public/uploads/*
+ *     /downloads/* → public/downloads/*
+ *     /           →  public/index.html  (guests only)
  *
  * Does NOT start the HTTP server — that is server.js's job.
  * ============================================================
  */
 
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
@@ -53,7 +43,83 @@ const routes = require("../routes");
 
 const app = express();
 const isProd = (process.env.NODE_ENV || "development") === "production";
-const publicDir = path.join(__dirname, "../../public");
+
+/**
+ * Absolute path to the public/ folder.
+ *
+ * __dirname        = <root>/app/config
+ * ../../public     = <root>/public
+ *
+ * On Render this resolves to: /opt/render/project/src/public
+ */
+const publicDir = path.resolve(__dirname, "../../public");
+const assetsDir = path.join(publicDir, "assets");
+
+/* ==================================================================
+ * BOOT-TIME VERIFICATION
+ * ==================================================================
+ * Runs once when this module is first required (i.e. when the server
+ * starts). Prints an obvious log line for each critical path so that
+ * a misconfigured deploy shows up immediately in the Render logs
+ * instead of silently returning 404s to every visitor.
+ * ================================================================== */
+
+function verifyAssets() {
+  const lines = [];
+
+  lines.push("");
+  lines.push("╔══════════════════════════════════════════════════════════╗");
+  lines.push("║  ExpertHub — asset verification                          ║");
+  lines.push("╚══════════════════════════════════════════════════════════╝");
+  lines.push(`  publicDir:  ${publicDir}`);
+  lines.push(`  assetsDir:  ${assetsDir}`);
+  lines.push("");
+
+  if (!fs.existsSync(publicDir)) {
+    lines.push("  ✗ public/ DIRECTORY NOT FOUND");
+    lines.push("    → Did you push the public/ folder to git?");
+    lines.push("    → Is the working directory correct?");
+  } else {
+    lines.push("  ✓ public/ exists");
+  }
+
+  if (!fs.existsSync(assetsDir)) {
+    lines.push("  ✗ public/assets/ DIRECTORY NOT FOUND");
+    lines.push("    → Create it and push:");
+    lines.push("        git add public/assets");
+  } else {
+    lines.push("  ✓ public/assets/ exists");
+
+    const css = path.join(assetsDir, "css", "style.css");
+    const appJs = path.join(assetsDir, "js", "app.js");
+    const homeJs = path.join(assetsDir, "js", "home.js");
+    const logo = path.join(assetsDir, "img", "logo.svg");
+
+    const checks = [
+      ["css/style.css", css],
+      ["js/app.js", appJs],
+      ["js/home.js", homeJs],
+      ["img/logo.svg", logo],
+    ];
+
+    for (const [label, file] of checks) {
+      if (fs.existsSync(file)) {
+        const stat = fs.statSync(file);
+        lines.push(`  ✓ public/assets/${label}  (${stat.size} bytes)`);
+      } else {
+        lines.push(`  ✗ public/assets/${label}  MISSING`);
+      }
+    }
+  }
+
+  lines.push("");
+
+  // Print once, on a single block so it isn't interleaved with the
+  // logger's line format.
+  console.log(lines.join("\n"));
+}
+
+verifyAssets();
 
 /* ------------------------------------------------------------------
  * 1. Core configuration
@@ -92,16 +158,6 @@ app.use(requestLogger);
 
 /* ------------------------------------------------------------------
  * 6. Session stack
- * ----------------------------------------------------------------
- *   Order matters: session → flash → csrf → attachUser.
- *
- *   If you later extract this into app/config/session.js, replace
- *   the inline block below with:
- *
- *       const createSession = require("./session");
- *       app.use(createSession());
- *
- *   and leave flash/csrf/attachUser as they are.
  * ---------------------------------------------------------------- */
 
 app.use(
@@ -127,26 +183,38 @@ app.use(flash());
 app.use(csrf());
 app.use(attachUser());
 
-/* ------------------------------------------------------------------
- * 7. Static assets
- * ----------------------------------------------------------------
- *   Only whitelisted subfolders of public/ are served. Everything
- *   else falls through to routes. This blocks /uploads/private/*
- *   and /uploads/temp/* from being fetched directly.
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * 7. STATIC ASSETS
+ * ==================================================================
+ *
+ * The three lines below are the entire link between the app and the
+ * public/assets folder:
+ *
+ *     /assets/css/style.css   →  public/assets/css/style.css
+ *     /assets/js/app.js       →  public/assets/js/app.js
+ *     /assets/img/logo.svg    →  public/assets/img/logo.svg
+ *
+ * If a file is missing, express.static calls next(), and the request
+ * falls through to the routes — which return HTML, not the file.
+ * That's why a missing CSS file looks like "assets not loading".
+ *
+ * `fallthrough: false` on a diagnostic sub-mount is deliberately NOT
+ * used here because it would break the /  handler for missing paths.
+ * ================================================================== */
 
-// Versioned, long-cacheable asset folder.
+// /assets → public/assets
 app.use(
   "/assets",
-  express.static(path.join(publicDir, "assets"), {
+  express.static(assetsDir, {
     maxAge: isProd ? "30d" : 0,
     immutable: isProd,
     etag: true,
     lastModified: true,
+    index: false,
   })
 );
 
-// Safe upload subfolders — served directly.
+// /uploads/<sub> → public/uploads/<sub>
 const publicUploadDirs = [
   "avatars",
   "courses",
@@ -166,7 +234,7 @@ for (const sub of publicUploadDirs) {
   );
 }
 
-// Downloadable files.
+// /downloads → public/downloads
 app.use(
   "/downloads",
   express.static(path.join(publicDir, "downloads"), {
@@ -175,10 +243,7 @@ app.use(
 );
 
 /* ------------------------------------------------------------------
- * 8. Blocked paths
- * ----------------------------------------------------------------
- *   Must run BEFORE the general static mount below, otherwise the
- *   general mount would pick these up.
+ * 8. Blocked paths (must run before the general static mount)
  * ---------------------------------------------------------------- */
 
 app.use(["/uploads/private", "/uploads/temp"], (req, res) =>
@@ -188,12 +253,10 @@ app.use(["/uploads/private", "/uploads/temp"], (req, res) =>
 /* ------------------------------------------------------------------
  * 9. Root-level static files
  * ----------------------------------------------------------------
- *   Serves favicon.ico, robots.txt, sitemap.xml, site.webmanifest,
- *   browserconfig.xml, humans.txt, .well-known/*.
+ * Serves favicon.ico, robots.txt, sitemap.xml, site.webmanifest,
+ * browserconfig.xml, humans.txt, .well-known/*.
  *
- *   index: false so that `/` is NOT auto-served by the static
- *   middleware — the `/` route below handles it explicitly so we
- *   can conditionally redirect signed-in users.
+ * index: false so that `/` is handled explicitly below.
  * ---------------------------------------------------------------- */
 
 app.use(
@@ -202,7 +265,6 @@ app.use(
     maxAge: isProd ? "1h" : 0,
     etag: true,
     setHeaders(res, filePath) {
-      // Give the HTML page a shorter cache than assets.
       if (filePath.endsWith(".html")) {
         res.setHeader("Cache-Control", "no-cache");
       }
@@ -210,12 +272,15 @@ app.use(
   })
 );
 
-/* ------------------------------------------------------------------
- * 10. Health check
- * ----------------------------------------------------------------
- *   The landing page pings /health. Keep this lightweight — it must
- *   not touch the database.
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * 10. DIAGNOSTIC ENDPOINTS
+ * ==================================================================
+ * Two endpoints that let you verify what's actually being served
+ * from the live server — no shell access required.
+ *
+ *     GET /health          → existing health check
+ *     GET /assets-status   → shows every critical file and its status
+ * ================================================================== */
 
 app.get("/health", (req, res) => {
   res.json({
@@ -227,18 +292,59 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/assets-status", (req, res) => {
+  const targets = [
+    "css/style.css",
+    "js/app.js",
+    "js/home.js",
+    "js/forms.js",
+    "img/logo.svg",
+    "img/hero.svg",
+    "img/favicon.svg",
+    "img/icons/student.svg",
+    "img/icons/expert.svg",
+    "img/icons/corporate.svg",
+    "img/icons/admin.svg",
+    "img/icons/course.svg",
+    "img/icons/event.svg",
+    "img/icons/certificate.svg",
+    "img/icons/chat.svg",
+  ];
+
+  const report = targets.map((rel) => {
+    const full = path.join(assetsDir, rel);
+    const exists = fs.existsSync(full);
+    let size = 0;
+    if (exists) {
+      try {
+        size = fs.statSync(full).size;
+      } catch {
+        size = -1;
+      }
+    }
+    return {
+      file: `/assets/${rel}`,
+      exists,
+      size,
+      localPath: full,
+    };
+  });
+
+  const missing = report.filter((r) => !r.exists);
+
+  res.status(missing.length ? 500 : 200).json({
+    publicDir,
+    assetsDir,
+    publicExists: fs.existsSync(publicDir),
+    assetsExists: fs.existsSync(assetsDir),
+    total: report.length,
+    missing: missing.length,
+    files: report,
+  });
+});
+
 /* ------------------------------------------------------------------
  * 11. Landing page for /
- * ----------------------------------------------------------------
- *   Signed-in users skip the landing page and go straight to their
- *   dashboard. Guests get public/index.html.
- *
- *   If you'd rather render this from a controller/view engine,
- *   replace the body of this handler with:
- *
- *       res.render("home", { user: req.user });
- *
- *   and delete this route — the controller's route will take over.
  * ---------------------------------------------------------------- */
 
 app.get("/", (req, res, next) => {
@@ -246,25 +352,32 @@ app.get("/", (req, res, next) => {
     return res.redirect("/dashboard");
   }
 
-  res.sendFile(path.join(publicDir, "index.html"), (err) => {
+  const indexPath = path.join(publicDir, "index.html");
+
+  if (!fs.existsSync(indexPath)) {
+    return res
+      .status(500)
+      .type("html")
+      .send(
+        "<h1>Configuration error</h1>" +
+        "<p>public/index.html is missing on the server.</p>" +
+        "<p>Push it to your git repository and redeploy.</p>"
+      );
+  }
+
+  res.sendFile(indexPath, (err) => {
     if (err) return next(err);
   });
 });
 
 /* ------------------------------------------------------------------
  * 12. Application routes
- * ----------------------------------------------------------------
- *   Routes are mounted AFTER static and the / handler, so a route
- *   like /courses will not accidentally shadow /assets/css/style.css.
  * ---------------------------------------------------------------- */
 
 app.use(routes);
 
 /* ------------------------------------------------------------------
  * 13. Terminal handlers
- * ----------------------------------------------------------------
- *   Order is fixed: 404 first, then the error handler. The error
- *   handler must have 4 arguments or Express won't recognize it.
  * ---------------------------------------------------------------- */
 
 app.use(notFound);
