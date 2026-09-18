@@ -192,7 +192,7 @@ app.use(attachUser());
  *
  *     /assets/css/style.css   →  public/assets/css/style.css
  *     /assets/js/app.js       →  public/assets/js/app.js
- *     /assets/img/logo.svg    →  public/assets/img/logo.svg
+ *     /assets/images/logo.svg    →  public/assets/images/logo.svg
  *
  * If a file is missing, express.static calls next(), and the request
  * falls through to the routes — which return HTML, not the file.
