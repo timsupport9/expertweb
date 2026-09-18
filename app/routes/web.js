@@ -68,7 +68,7 @@ function renderAuthPage(title, mode) {
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/">
-      <img src="/assets/img/logo.svg" alt="ExpertHub" height="28"/>
+      <img src="/assets/images/logo.svg" alt="ExpertHub" height="28"/>
     </a>
     <nav>
       <a href="/courses">Courses</a>
