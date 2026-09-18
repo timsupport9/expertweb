@@ -1,69 +1,114 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1220" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="color-scheme" content="light dark">
 
   <title>ExpertHub — Turn expertise into progress</title>
-  <meta name="description" content="ExpertHub connects students, professionals and organizations with qualified experts for learning, consultation, events and corporate training." />
-  <meta name="author" content="ExpertHub" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
+
+  <meta
+    name="description"
+    content="ExpertHub connects students, professionals and organizations with qualified experts for learning, consultation, events and corporate training."
+  >
+  <meta name="author" content="ExpertHub">
+  <meta name="robots" content="index, follow">
+
+  <link
+    rel="canonical"
+    href="https://timbackend-ylc0.onrender.com/"
+  >
 
   <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="ExpertHub" />
-  <meta property="og:title" content="ExpertHub — Turn expertise into progress" />
-  <meta property="og:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta property="og:url" content="https://timbackend-ylc0.onrender.com/" />
-  <meta property="og:image" content="/assets/images/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ExpertHub">
+  <meta property="og:title" content="ExpertHub — Turn expertise into progress">
+  <meta
+    property="og:description"
+    content="Structured learning, expert consultations, events and corporate training in one hub."
+  >
+  <meta
+    property="og:url"
+    content="https://timbackend-ylc0.onrender.com/"
+  >
 
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ExpertHub — Turn expertise into progress" />
-  <meta name="twitter:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta name="twitter:image" content="/assets/images/twitter-card.png" />
+  <meta name="twitter:card" content="summary">
+  <meta
+    name="twitter:title"
+    content="ExpertHub — Turn expertise into progress"
+  >
+  <meta
+    name="twitter:description"
+    content="Structured learning, expert consultations, events and corporate training in one hub."
+  >
 
-  <!-- CSRF token — read by /assets/js/app.js -->
-  <meta name="csrf-token" content="" />
+  <!-- CSRF token -->
+  <meta name="csrf-token" content="">
 
-  <!-- ============================================================
-       ICONS — every icon lives in /assets/images/
-       ============================================================ -->
-  <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/assets/images/favicon.svg" />
-  <link rel="mask-icon" href="/assets/images/favicon.svg" color="#4c8dff" />
-  <link rel="manifest" href="/site.webmanifest" />
+  <!-- =========================================================
+       FAVICON / APP ICONS
+       All static image assets are inside /public/assets/images/
+       ========================================================= -->
+  <link
+    rel="icon"
+    href="/assets/images/favicon.svg"
+    type="image/svg+xml"
+  >
 
-  <!-- ============================================================
-       FONTS — self-hosted from /assets/fonts/
-       Uncomment once you drop Inter WOFF2 files into /assets/fonts/
-       ============================================================ -->
-  <!--
-  <link rel="preload" as="font" type="font/woff2"
-        href="/assets/fonts/Inter-Regular.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2"
-        href="/assets/fonts/Inter-SemiBold.woff2" crossorigin />
-  -->
+  <link
+    rel="apple-touch-icon"
+    href="/assets/images/favicon.svg"
+  >
 
-  <!-- ============================================================
-       IMAGE PRELOADS — critical above-the-fold assets
-       ============================================================ -->
-  <link rel="preload" as="image" href="/assets/images/logo.svg" />
-  <link rel="preload" as="image" href="/assets/images/hero.svg" />
+  <link
+    rel="mask-icon"
+    href="/assets/images/favicon.svg"
+    color="#4c8dff"
+  >
 
-  <!-- ============================================================
-       STYLES — single entry point from /assets/css/style.css
-       ============================================================ -->
-  <link rel="preload" as="style" href="/assets/css/style.css" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link
+    rel="manifest"
+    href="/site.webmanifest"
+  >
 
-  <!-- ============================================================
+  <!-- =========================================================
+       CRITICAL IMAGE PRELOADS
+       ========================================================= -->
+  <link
+    rel="preload"
+    as="image"
+    href="/assets/images/logo.svg"
+  >
+
+  <link
+    rel="preload"
+    as="image"
+    href="/assets/images/hero.svg"
+  >
+
+  <!-- =========================================================
+       MAIN STYLESHEET
+       Render must expose /public as the web root.
+       Therefore:
+       /assets/css/style.css
+       -> public/assets/css/style.css
+       ========================================================= -->
+  <link
+    rel="preload"
+    as="style"
+    href="/assets/css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/style.css"
+  >
+
+  <!-- =========================================================
        STRUCTURED DATA
-       ============================================================ -->
+       ========================================================= -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -71,46 +116,93 @@
     "name": "ExpertHub",
     "url": "https://timbackend-ylc0.onrender.com/",
     "logo": "https://timbackend-ylc0.onrender.com/assets/images/logo.svg",
-    "image": "https://timbackend-ylc0.onrender.com/assets/images/og-image.png",
     "description": "Expert services, learning, consultation and professional development platform."
   }
   </script>
+
+  <!-- =========================================================
+       NOSCRIPT FALLBACK
+       ========================================================= -->
+  <style>
+    .noscript-message {
+      margin: 0;
+      padding: 12px 16px;
+      text-align: center;
+      font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: #fff3cd;
+      color: #664d03;
+      border-bottom: 1px solid #ffecb5;
+    }
+  </style>
 </head>
 
 <body data-page="home">
 
-  <!-- ==================================================================
+  <noscript>
+    <div class="noscript-message">
+      JavaScript is disabled. ExpertHub remains available, but some
+      interactive features may be limited.
+    </div>
+  </noscript>
+
+  <!-- =========================================================
        HEADER
-       ================================================================== -->
+       ========================================================= -->
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="/" aria-label="ExpertHub home">
-        <!-- /assets/images/logo.svg -->
-        <img src="/assets/images/logo.svg" alt="ExpertHub" height="28" />
+
+      <a
+        class="brand"
+        href="/"
+        aria-label="ExpertHub home"
+      >
+        <img
+          src="/assets/images/logo.svg"
+          alt="ExpertHub"
+          width="140"
+          height="28"
+          decoding="async"
+        >
       </a>
 
-      <nav aria-label="Primary">
+      <nav aria-label="Primary navigation">
         <a href="#features">Features</a>
         <a href="#audiences">For you</a>
         <a href="#status">Status</a>
         <a href="/login">Sign in</a>
-        <a class="btn btn-primary btn-sm" href="/register">Get started</a>
+
+        <a
+          class="btn btn-primary btn-sm"
+          href="/register"
+        >
+          Get started
+        </a>
       </nav>
+
     </div>
   </header>
 
   <main>
 
-    <!-- ================================================================
+    <!-- =========================================================
          HERO
-         ================================================================ -->
-    <section class="landing-hero" data-reveal>
+         ========================================================= -->
+    <section
+      class="landing-hero"
+      data-reveal
+      aria-labelledby="hero-title"
+    >
       <div class="container">
-        <div>
-          <span class="eyebrow">Learn · Consult · Grow</span>
 
-          <h1>
-            Turn expertise<br />
+        <div>
+
+          <span class="eyebrow">
+            Learn · Consult · Grow
+          </span>
+
+          <h1 id="hero-title">
+            Turn expertise<br>
             into <em>progress</em>.
           </h1>
 
@@ -120,34 +212,82 @@
           </p>
 
           <div class="cta">
-            <a class="btn btn-primary btn-lg" href="/register">Create account</a>
-            <a class="btn btn-ghost btn-lg" href="/courses">Browse courses</a>
+
+            <a
+              class="btn btn-primary btn-lg"
+              href="/register"
+            >
+              Create account
+            </a>
+
+            <a
+              class="btn btn-ghost btn-lg"
+              href="/courses"
+            >
+              Browse courses
+            </a>
+
           </div>
 
           <div class="hero-trust">
+
             <span>
-              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
               </svg>
               Expert-led content
             </span>
+
             <span>
-              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
               </svg>
               Structured learning paths
             </span>
+
             <span>
-              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
               </svg>
               Corporate-ready programs
             </span>
+
           </div>
+
         </div>
 
         <div class="hero-visual">
-          <!-- /assets/images/hero.svg -->
+
           <img
             src="/assets/images/hero.svg"
             alt="ExpertHub platform preview"
@@ -155,325 +295,627 @@
             height="480"
             loading="eager"
             decoding="async"
-          />
+          >
+
         </div>
+
       </div>
     </section>
 
-    <!-- ================================================================
+    <!-- =========================================================
          FEATURES
-         ================================================================ -->
-    <section class="landing-section" id="features">
+         ========================================================= -->
+    <section
+      class="landing-section"
+      id="features"
+      aria-labelledby="features-title"
+    >
       <div class="container">
+
         <div class="section-head" data-reveal>
-          <span class="kicker">Built for growth</span>
-          <h2>Everything you need to learn, consult and grow.</h2>
+
+          <span class="kicker">
+            Built for growth
+          </span>
+
+          <h2 id="features-title">
+            Everything you need to learn, consult and grow.
+          </h2>
+
           <p>
             ExpertHub brings structured learning, expert guidance,
             professional events and corporate training into a single
             coherent platform.
           </p>
+
         </div>
 
         <div class="feature-grid" data-reveal>
 
-          <!-- Learn — /assets/images/course.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/course.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/course.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Learn</h3>
-            <p>Structured courses, modules and practical assignments built around real professional outcomes.</p>
-            <a class="feature-link" href="/courses">Browse courses</a>
+
+            <p>
+              Structured courses, modules and practical assignments
+              built around real professional outcomes.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/courses"
+            >
+              Browse courses
+            </a>
+
           </article>
 
-          <!-- Consult — /assets/images/expert.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/expert.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/expert.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Consult</h3>
-            <p>Connect with vetted experts for focused, one-to-one guidance on the challenges that matter most.</p>
-            <a class="feature-link" href="/login?next=/dashboard">Find an expert</a>
+
+            <p>
+              Connect with vetted experts for focused, one-to-one
+              guidance on the challenges that matter most.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/login?next=/dashboard"
+            >
+              Find an expert
+            </a>
+
           </article>
 
-          <!-- Participate — /assets/images/event.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/event.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/event.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Participate</h3>
-            <p>Join events, webinars and training sessions that keep you current, connected and competitive.</p>
-            <a class="feature-link" href="/login?next=/dashboard">See events</a>
+
+            <p>
+              Join events, webinars and training sessions that keep
+              you current, connected and competitive.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/login?next=/dashboard"
+            >
+              See events
+            </a>
+
           </article>
 
-          <!-- Corporate — /assets/images/corporate.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/corporate.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/corporate.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Corporate training</h3>
-            <p>Upskill teams with measurable programs, progress tracking and consolidated reporting.</p>
-            <a class="feature-link" href="/register?role=corporate">Request a demo</a>
+
+            <p>
+              Upskill teams with measurable programs, progress tracking
+              and consolidated reporting.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/register?role=corporate"
+            >
+              Request a demo
+            </a>
+
           </article>
 
-          <!-- Dashboard — /assets/images/certificate.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/certificate.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/certificate.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Your dashboard</h3>
-            <p>Track enrollments, progress, certificates and upcoming sessions from a single personalized view.</p>
-            <a class="feature-link" href="/dashboard">Open dashboard</a>
+
+            <p>
+              Track enrollments, progress, certificates and upcoming
+              sessions from a single personalized view.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/dashboard"
+            >
+              Open dashboard
+            </a>
+
           </article>
 
-          <!-- API — /assets/images/chat.svg -->
           <article class="feature-card">
+
             <div class="icon" aria-hidden="true">
-              <img src="/assets/images/chat.svg" alt="" width="22" height="22" />
+              <img
+                src="/assets/images/chat.svg"
+                alt=""
+                width="22"
+                height="22"
+                loading="lazy"
+              >
             </div>
+
             <h3>Open API</h3>
-            <p>Integrate ExpertHub into your own tools with a clean, session-authenticated JSON API.</p>
-            <a class="feature-link" href="/api/health" target="_blank" rel="noopener">Explore API</a>
+
+            <p>
+              Integrate ExpertHub into your own tools with a clean,
+              session-authenticated JSON API.
+            </p>
+
+            <a
+              class="feature-link"
+              href="/api/health"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Explore API
+            </a>
+
           </article>
 
         </div>
+
       </div>
     </section>
 
-    <!-- ================================================================
+    <!-- =========================================================
          STATS
-         ================================================================ -->
-    <section class="landing-section">
+         ========================================================= -->
+    <section class="landing-section" aria-label="Platform statistics">
       <div class="container">
+
         <div class="stat-strip" data-reveal>
+
           <div class="stat-cell">
             <div class="stat-value">4</div>
-            <span class="stat-label">User roles supported</span>
+            <span class="stat-label">
+              User roles supported
+            </span>
           </div>
+
           <div class="stat-cell">
             <div class="stat-value">100%</div>
-            <span class="stat-label">Session-authenticated</span>
+            <span class="stat-label">
+              Session-authenticated
+            </span>
           </div>
+
           <div class="stat-cell">
             <div class="stat-value">24/7</div>
-            <span class="stat-label">Hosted on Render</span>
+            <span class="stat-label">
+              Hosted on Render
+            </span>
           </div>
+
           <div class="stat-cell">
             <div class="stat-value">v1</div>
-            <span class="stat-label">API version</span>
+            <span class="stat-label">
+              API version
+            </span>
           </div>
+
         </div>
+
       </div>
     </section>
 
-    <!-- ================================================================
+    <!-- =========================================================
          AUDIENCES
-         ================================================================ -->
-    <section class="landing-section" id="audiences">
+         ========================================================= -->
+    <section
+      class="landing-section"
+      id="audiences"
+      aria-labelledby="audiences-title"
+    >
       <div class="container">
+
         <div class="section-head" data-reveal>
-          <span class="kicker">Built for you</span>
-          <h2>Pick the path that fits your goals.</h2>
+
+          <span class="kicker">
+            Built for you
+          </span>
+
+          <h2 id="audiences-title">
+            Pick the path that fits your goals.
+          </h2>
+
           <p>
-            Every role gets a tailored dashboard, curated content and the
-            right permissions for the work they do.
+            Every role gets a tailored dashboard, curated content and
+            the right permissions for the work they do.
           </p>
+
         </div>
 
         <div class="audience-grid" data-reveal>
 
           <article class="audience-card">
-            <!-- /assets/images/student.svg -->
-            <img class="role-icon" src="/assets/images/student.svg"
-                 alt="" width="40" height="40" aria-hidden="true" />
+
+            <img
+              class="role-icon"
+              src="/assets/images/student.svg"
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              aria-hidden="true"
+            >
+
             <h3>Students</h3>
+
             <ul>
               <li>Enroll in expert-led courses</li>
               <li>Track lessons, quizzes and assignments</li>
               <li>Earn certificates and badges</li>
               <li>Book one-to-one consultations</li>
             </ul>
+
           </article>
 
           <article class="audience-card">
-            <!-- /assets/images/expert.svg -->
-            <img class="role-icon" src="/assets/images/expert.svg"
-                 alt="" width="40" height="40" aria-hidden="true" />
+
+            <img
+              class="role-icon"
+              src="/assets/images/expert.svg"
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              aria-hidden="true"
+            >
+
             <h3>Experts</h3>
+
             <ul>
               <li>Publish courses and manage content</li>
               <li>Set availability and book consultations</li>
               <li>Track earnings and reviews</li>
               <li>Build a professional profile</li>
             </ul>
+
           </article>
 
           <article class="audience-card">
-            <!-- /assets/images/corporate.svg -->
-            <img class="role-icon" src="/assets/images/corporate.svg"
-                 alt="" width="40" height="40" aria-hidden="true" />
+
+            <img
+              class="role-icon"
+              src="/assets/images/corporate.svg"
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              aria-hidden="true"
+            >
+
             <h3>Corporate</h3>
+
             <ul>
               <li>Enroll employees in training programs</li>
               <li>Track progress across departments</li>
               <li>Access consolidated reports</li>
               <li>Manage invoices and subscriptions</li>
             </ul>
+
           </article>
 
           <article class="audience-card">
-            <!-- /assets/images/admin.svg -->
-            <img class="role-icon" src="/assets/images/admin.svg"
-                 alt="" width="40" height="40" aria-hidden="true" />
+
+            <img
+              class="role-icon"
+              src="/assets/images/admin.svg"
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              aria-hidden="true"
+            >
+
             <h3>Administrators</h3>
+
             <ul>
               <li>Manage users, roles and permissions</li>
               <li>Publish courses, events and resources</li>
               <li>Monitor payments and subscriptions</li>
               <li>Review audit logs and analytics</li>
             </ul>
+
           </article>
 
         </div>
+
       </div>
     </section>
 
-    <!-- ================================================================
+    <!-- =========================================================
          STATUS & API
-         ================================================================ -->
-    <section class="landing-section" id="status">
+         ========================================================= -->
+    <section
+      class="landing-section"
+      id="status"
+      aria-labelledby="status-title"
+    >
       <div class="container">
+
         <div class="section-head" data-reveal>
-          <span class="kicker">Live</span>
-          <h2>Platform status &amp; API</h2>
-          <p>ExpertHub exposes a small, predictable JSON API. The panel below checks the live backend every 30 seconds.</p>
+
+          <span class="kicker">
+            Live
+          </span>
+
+          <h2 id="status-title">
+            Platform status &amp; API
+          </h2>
+
+          <p>
+            ExpertHub exposes a small, predictable JSON API.
+            The panel below checks the live backend every 30 seconds.
+          </p>
+
         </div>
 
         <div class="status-panel" data-reveal>
 
           <div class="status-box">
+
             <h3>Backend status</h3>
 
             <div class="status-indicator">
-              <span class="status-dot" id="status-dot" aria-hidden="true"></span>
-              <span id="status-text">Checking…</span>
+              <span
+                class="status-dot"
+                id="status-dot"
+                aria-hidden="true"
+              ></span>
+
+              <span id="status-text">
+                Checking…
+              </span>
             </div>
 
-            <p class="status-meta" id="status-meta">—</p>
+            <p
+              class="status-meta"
+              id="status-meta"
+            >
+              —
+            </p>
 
-            <button class="btn btn-sm" type="button" id="refresh-status">Refresh now</button>
+            <button
+              class="btn btn-sm"
+              type="button"
+              id="refresh-status"
+            >
+              Refresh now
+            </button>
+
           </div>
 
           <div class="status-box">
+
             <h3>Available endpoints</h3>
 
             <ul class="endpoint-list">
+
               <li>
-                <a href="/health" target="_blank" rel="noopener">
+                <a
+                  href="/health"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span class="method">GET</span>
                   <span>/health</span>
                 </a>
               </li>
+
               <li>
-                <a href="/api/health" target="_blank" rel="noopener">
+                <a
+                  href="/api/health"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span class="method">GET</span>
                   <span>/api/health</span>
                 </a>
               </li>
+
               <li>
-                <a href="/api/courses" target="_blank" rel="noopener">
+                <a
+                  href="/api/courses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span class="method">GET</span>
                   <span>/api/courses</span>
                 </a>
               </li>
+
               <li>
-                <a href="/api/auth/me" target="_blank" rel="noopener">
+                <a
+                  href="/api/auth/me"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span class="method">GET</span>
                   <span>/api/auth/me</span>
                 </a>
               </li>
+
               <li>
                 <a href="/login">
                   <span class="method post">POST</span>
                   <span>/login</span>
                 </a>
               </li>
+
               <li>
                 <a href="/register">
                   <span class="method post">POST</span>
                   <span>/register</span>
                 </a>
               </li>
+
             </ul>
+
           </div>
 
         </div>
+
       </div>
     </section>
 
-    <!-- ================================================================
+    <!-- =========================================================
          FINAL CTA
-         ================================================================ -->
-    <section class="landing-section">
+         ========================================================= -->
+    <section
+      class="landing-section"
+      aria-labelledby="final-cta-title"
+    >
       <div class="container">
-        <div class="final-cta" data-reveal>
-          <h2>Ready to turn expertise into progress?</h2>
-          <p>Create a free account and start learning, consulting or training today — all from one hub.</p>
+
+        <div
+          class="final-cta"
+          data-reveal
+        >
+
+          <h2 id="final-cta-title">
+            Ready to turn expertise into progress?
+          </h2>
+
+          <p>
+            Create a free account and start learning, consulting
+            or training today — all from one hub.
+          </p>
+
           <div class="cta">
-            <a class="btn btn-primary btn-lg" href="/register">Create account</a>
-            <a class="btn btn-ghost btn-lg" href="/login">Sign in</a>
+
+            <a
+              class="btn btn-primary btn-lg"
+              href="/register"
+            >
+              Create account
+            </a>
+
+            <a
+              class="btn btn-ghost btn-lg"
+              href="/login"
+            >
+              Sign in
+            </a>
+
           </div>
+
         </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- ==================================================================
+  <!-- =========================================================
        FOOTER
-       ================================================================== -->
+       ========================================================= -->
   <footer class="footer">
+
     <div class="container">
-      <span>&copy; <span data-year>2026</span> ExpertHub</span>
+
+      <span>
+        &copy;
+        <span data-year>2026</span>
+        ExpertHub
+      </span>
+
       <span aria-hidden="true">·</span>
-      <a href="/courses">Courses</a>
+
+      <a href="/courses">
+        Courses
+      </a>
+
       <span aria-hidden="true">·</span>
-      <a href="/api/health" target="_blank" rel="noopener">API</a>
+
+      <a
+        href="/api/health"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        API
+      </a>
+
       <span aria-hidden="true">·</span>
-      <a href="/login">Sign in</a>
+
+      <a href="/login">
+        Sign in
+      </a>
+
       <span aria-hidden="true">·</span>
-      <a href="/register">Get started</a>
+
+      <a href="/register">
+        Get started
+      </a>
+
     </div>
+
   </footer>
 
-  <!-- ============================================================
-       SCRIPTS — every script from /assets/js/
-       ============================================================ -->
+  <!-- =========================================================
+       JAVASCRIPT
+       All JavaScript files are inside /public/assets/js/
+       ========================================================= -->
 
-  <!--
-    app.js handles:
-      - year stamp on [data-year]
-      - flash auto-dismiss
-      - submit-button busy state
-      - CSRF token injection into fetch()
-      - reveal animation on [data-reveal]
-      - smooth scroll for #anchors
-      - external link hardening
-      - auto-load of /assets/js/home.js because of <body data-page="home">
-  -->
-  <script src="/assets/js/app.js" defer></script>
+  <script
+    src="/assets/js/app.js"
+    defer
+  ></script>
 
-  <!--
-    Optional: per-page enhancements for the landing page.
-    These are loaded globally so they are available on any page that
-    uses a form, password field, chat widget, etc.
-
-    Remove any script line you do not need to keep pages lean.
-  -->
-
-  <!-- Form helpers — password confirm, char counter, double-submit guard -->
-  <script src="/assets/js/forms.js" defer></script>
+  <script
+    src="/assets/js/forms.js"
+    defer
+  ></script>
 
 </body>
 </html>
