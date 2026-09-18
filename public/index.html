@@ -1,225 +1,693 @@
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1220" />
-
-  <title>ExpertHub — Turn expertise into progress</title>
+  <title>ExpertHub — Turn expertise into progress.</title>
   <meta name="description" content="ExpertHub connects students, professionals and organizations with qualified experts for learning, consultation, events and corporate training." />
-  <meta name="author" content="ExpertHub" />
-  <meta name="robots" content="index, follow" />
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="ExpertHub" />
-  <meta property="og:title" content="ExpertHub — Turn expertise into progress" />
-  <meta property="og:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta property="og:url" content="https://timbackend-ylc0.onrender.com/" />
-  <meta property="og:image" content="https://timbackend-ylc0.onrender.com/assets/img/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ExpertHub — Turn expertise into progress" />
-  <meta name="twitter:description" content="Structured learning, expert consultations, events and corporate training in one hub." />
-  <meta name="twitter:image" content="https://timbackend-ylc0.onrender.com/assets/img/twitter-card.png" />
-
-  <!-- Icons & manifest -->
-  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
-  <link rel="apple-touch-icon" href="/assets/img/favicon.svg" />
   <link rel="manifest" href="/site.webmanifest" />
-  <link rel="canonical" href="https://timbackend-ylc0.onrender.com/" />
-
-  <!-- CSRF token — read by /assets/js/app.js for fetch() calls -->
-  <meta name="csrf-token" content="" />
-
-  <!-- Preloads -->
-  <link rel="preload" as="style" href="/assets/css/style.css" />
-  <link rel="preload" as="image" href="/assets/img/hero.svg" />
-
-  <!-- Styles — single entry point that imports everything -->
   <link rel="stylesheet" href="/assets/css/style.css" />
 
-  <!-- Structured data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "ExpertHub",
-    "url": "https://timbackend-ylc0.onrender.com/",
-    "logo": href="/assets/img/logo.svg",
-    "description": "Expert services, learning, consultation and professional development platform.",
-    "sameAs": []
-  }
-  </script>
+  <style>
+    /* ------------------------------------------------------------------
+       Landing-page-only styles. Everything else uses the shared
+       public/assets/css system (base, layout, components, utilities).
+       ------------------------------------------------------------------ */
+
+    .landing-hero {
+      padding: var(--s-16) 0 var(--s-12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .landing-hero::before {
+      content: "";
+      position: absolute;
+      inset: -20% -10% auto -10%;
+      height: 70%;
+      background:
+        radial-gradient(60% 60% at 20% 20%, rgba(76,141,255,.18), transparent 70%),
+        radial-gradient(50% 50% at 80% 10%, rgba(143,109,255,.15), transparent 70%);
+      filter: blur(20px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .landing-hero > .container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--s-12);
+      align-items: center;
+    }
+
+    .landing-hero .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: .35rem .8rem;
+      border-radius: var(--radius-pill);
+      background: rgba(76,141,255,.12);
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-5);
+    }
+
+    .landing-hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -.025em;
+      margin: 0 0 var(--s-5);
+    }
+
+    .landing-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), #8f6dff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .landing-hero .lede {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 0 var(--s-8);
+    }
+
+    .landing-hero .cta {
+      display: flex;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--s-8);
+    }
+
+    .landing-hero .hero-trust {
+      display: flex;
+      gap: var(--s-6);
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .landing-hero .hero-trust span {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .landing-hero .hero-trust svg {
+      width: 16px;
+      height: 16px;
+      color: var(--ok);
+    }
+
+    .hero-visual {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4 / 3;
+    }
+
+    .hero-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ------------------------------------------------------------------
+       Section shell
+       ------------------------------------------------------------------ */
+
+    .landing-section {
+      padding: var(--s-16) 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .landing-section .section-head {
+      max-width: 720px;
+      margin-bottom: var(--s-10);
+    }
+
+    .landing-section .section-head .kicker {
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: var(--s-3);
+    }
+
+    .landing-section h2 {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      margin: 0 0 var(--s-4);
+      letter-spacing: -.02em;
+    }
+
+    .landing-section .section-head p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    /* ------------------------------------------------------------------
+       Feature cards
+       ------------------------------------------------------------------ */
+
+    .feature-grid {
+      display: grid;
+      gap: var(--s-5);
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .feature-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      padding: var(--s-6);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(76,141,255,.45);
+      background: var(--panel-2);
+    }
+
+    .feature-card .icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-sm);
+      background: rgba(76,141,255,.12);
+      color: var(--accent);
+    }
+
+    .feature-card .icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      margin: 0;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: .95rem;
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .feature-card .feature-link {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: .9rem;
+      text-decoration: none;
+    }
+
+    .feature-card .feature-link:hover {
+      text-decoration: none;
+      gap: var(--s-3);
+    }
+
+    .feature-card .feature-link::after {
+      content: "→";
+      transition: transform .15s ease;
+    }
+
+    .feature-card .feature-link:hover::after {
+      transform: translateX(3px);
+    }
+
+    /* ------------------------------------------------------------------
+       Platform stats
+       ------------------------------------------------------------------ */
+
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--s-5);
+      padding: var(--s-10);
+      background: linear-gradient(180deg, rgba(76,141,255,.06), rgba(143,109,255,.04));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-strip .stat-cell {
+      text-align: center;
+    }
+
+    .stat-strip .stat-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      background: linear-gradient(90deg, var(--accent), #8f6dff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
+    }
+
+    .stat-strip .stat-label {
+      display: block;
+      margin-top: var(--s-2);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* ------------------------------------------------------------------
+       Audience cards
+       ------------------------------------------------------------------ */
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--s-5);
+    }
+
+    .audience-card {
+      padding: var(--s-6);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-align: left;
+    }
+
+    .audience-card .role-icon {
+      width: 40px;
+      height: 40px;
+      color: var(--accent);
+      margin-bottom: var(--s-3);
+    }
+
+    .audience-card h3 {
+      margin: 0 0 var(--s-2);
+      font-size: 1.1rem;
+    }
+
+    .audience-card ul {
+      list-style: none;
+      padding: 0;
+      margin: var(--s-4) 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .audience-card li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-2);
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .audience-card li::before {
+      content: "✓";
+      color: var(--ok);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ------------------------------------------------------------------
+       API / status panel
+       ------------------------------------------------------------------ */
+
+    .status-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5);
+      align-items: stretch;
+    }
+
+    .status-box {
+      padding: var(--s-6);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .status-box h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-3);
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--muted-2);
+      flex-shrink: 0;
+    }
+
+    .status-dot.ok   { background: var(--ok);   box-shadow: 0 0 0 4px rgba(36,196,122,.15); }
+    .status-dot.warn { background: var(--warn); box-shadow: 0 0 0 4px rgba(240,160,32,.15); }
+    .status-dot.err  { background: var(--danger); box-shadow: 0 0 0 4px rgba(255,92,92,.15); }
+
+    .status-meta {
+      color: var(--muted);
+      font-size: .85rem;
+      font-family: var(--font-mono);
+      margin: 0;
+      word-break: break-all;
+    }
+
+    .endpoint-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .endpoint-list a {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-2) var(--s-3);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: .82rem;
+      color: var(--fg);
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+
+    .endpoint-list a:hover {
+      background: rgba(76,141,255,.1);
+      text-decoration: none;
+    }
+
+    .endpoint-list .method {
+      display: inline-block;
+      min-width: 46px;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(36,196,122,.15);
+      color: var(--ok);
+      font-size: .7rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .05em;
+    }
+
+    .endpoint-list .method.post {
+      background: rgba(240,160,32,.15);
+      color: var(--warn);
+    }
+
+    /* ------------------------------------------------------------------
+       Final CTA
+       ------------------------------------------------------------------ */
+
+    .final-cta {
+      text-align: center;
+      padding: var(--s-12) var(--s-6);
+      background: linear-gradient(180deg, rgba(76,141,255,.08), rgba(143,109,255,.04));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .final-cta h2 {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      margin: 0 0 var(--s-4);
+    }
+
+    .final-cta p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto var(--s-8);
+    }
+
+    .final-cta .cta {
+      display: flex;
+      gap: var(--s-3);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ------------------------------------------------------------------
+       Responsive
+       ------------------------------------------------------------------ */
+
+    @media (max-width: 900px) {
+      .landing-hero > .container {
+        grid-template-columns: 1fr;
+        gap: var(--s-8);
+      }
+      .hero-visual {
+        aspect-ratio: 16 / 10;
+      }
+      .status-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .landing-hero {
+        padding: var(--s-10) 0 var(--s-8);
+      }
+      .landing-section {
+        padding: var(--s-12) 0;
+      }
+      .landing-hero .hero-trust {
+        gap: var(--s-4);
+      }
+      .stat-strip {
+        padding: var(--s-8) var(--s-5);
+      }
+    }
+  </style>
 </head>
+<body>
 
-<!--
-  data-page="home" tells /assets/js/app.js to auto-load
-  /assets/js/home.js if it exists. Drop a home.js in that folder and
-  it will run on this page automatically — no extra <script> tag.
--->
-<body data-page="home">
-
-  <!-- =================================================================
+  <!-- ------------------------------------------------------------------
        Header
-       ================================================================= -->
+       ------------------------------------------------------------------ -->
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="/" aria-label="ExpertHub home">
+      <a class="brand" href="/">
         <img src="/assets/img/logo.svg" alt="ExpertHub" height="28" />
       </a>
-
-      <nav aria-label="Primary">
+      <nav>
         <a href="#features">Features</a>
-        <a href="/courses">Courses</a>
+        <a href="#audiences">For you</a>
+        <a href="#status">Status</a>
         <a href="/login">Sign in</a>
         <a class="btn btn-primary btn-sm" href="/register">Get started</a>
       </nav>
     </div>
   </header>
 
-  <!-- =================================================================
-       Main
-       ================================================================= -->
   <main>
 
     <!-- ----------------------------------------------------------------
          Hero
          ---------------------------------------------------------------- -->
-    <section class="hero" data-reveal>
+    <section class="landing-hero">
       <div class="container">
-        <span class="pill pill-ok" style="display:inline-block;margin-bottom:1rem">
-          Live on Render
-        </span>
+        <div>
+          <span class="eyebrow">Learn · Consult · Grow</span>
 
-        <h1>Turn expertise into <em>progress</em>.</h1>
+          <h1>
+            Turn expertise<br />
+            into <em>progress</em>.
+          </h1>
 
-        <p class="lede">
-          Learn from vetted experts, book focused consultations, join
-          professional events and train your team — all from one platform.
-        </p>
+          <p class="lede">
+            Access practical learning, expert consultations, events and
+            professional support in one place. One hub. Many possibilities.
+          </p>
 
-        <div class="cta">
-          <a class="btn btn-primary btn-lg" href="/register">Create account</a>
-          <a class="btn btn-ghost btn-lg" href="/courses">Browse courses</a>
+          <div class="cta">
+            <a class="btn btn-primary btn-lg" href="/register">Create account</a>
+            <a class="btn btn-ghost btn-lg" href="/courses">Browse courses</a>
+          </div>
+
+          <div class="hero-trust">
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Expert-led content
+            </span>
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Structured learning paths
+            </span>
+            <span>
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Corporate-ready programs
+            </span>
+          </div>
         </div>
 
-        <ul class="list list-arrow" style="margin-top:2.5rem;max-width:520px">
-          <li><span>Expert-led content</span><span class="pill pill-ok">✓</span></li>
-          <li><span>Structured learning paths</span><span class="pill pill-ok">✓</span></li>
-          <li><span>Corporate-ready programs</span><span class="pill pill-ok">✓</span></li>
-          <li><span>Session-authenticated API</span><span class="pill pill-ok">✓</span></li>
-        </ul>
+        <div class="hero-visual">
+          <img src="/assets/img/hero.svg" alt="ExpertHub platform preview" loading="eager" />
+        </div>
       </div>
     </section>
 
     <!-- ----------------------------------------------------------------
-         Features — uses the .feature-card component and inline SVG
-         icons that inherit currentColor from the .icon wrapper.
+         Features — each card links to a real backend route
          ---------------------------------------------------------------- -->
     <section class="landing-section" id="features">
       <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="kicker">Built for growth</span>
+        <div class="section-head">
+          <div class="kicker">Built for growth</div>
           <h2>Everything you need to learn, consult and grow.</h2>
           <p>
             ExpertHub brings structured learning, expert guidance,
-            professional events and corporate training into one
+            professional events and corporate training into a single,
             coherent platform.
           </p>
         </div>
 
-        <div class="grid" data-reveal>
+        <div class="feature-grid">
 
+          <!-- Learn -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 8 H24 V26 A2 2 0 0 1 22 28 H8 A2 2 0 0 1 6 26 Z"/>
-                <path d="M10 8 V4 A2 2 0 0 1 12 2 H20 A2 2 0 0 1 22 4 V8"/>
-                <path d="M11 15 H21 M11 20 H21 M11 25 H17"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16v11a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+                <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                <path d="M8 11h8M8 15h5" />
               </svg>
             </div>
             <h3>Learn</h3>
-            <p>Structured courses with modules, lessons and assessments.</p>
+            <p>
+              Structured courses, modules and practical assignments built
+              around real professional outcomes.
+            </p>
             <a class="feature-link" href="/courses">Browse courses</a>
           </article>
 
+          <!-- Consult -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="16" cy="16" r="14"/>
-                <circle cx="16" cy="13" r="3"/>
-                <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24"/>
-                <path d="M22 9 L24 11 L28 7"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M4.5 20a7.5 7.5 0 0115 0" />
               </svg>
             </div>
             <h3>Consult</h3>
-            <p>Book one-to-one sessions with vetted professionals.</p>
+            <p>
+              Connect with vetted experts for focused, one-to-one guidance
+              on the challenges that matter most.
+            </p>
             <a class="feature-link" href="/login?next=/dashboard">Find an expert</a>
           </article>
 
+          <!-- Participate -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="8" width="24" height="20" rx="3"/>
-                <path d="M4 14 H28"/>
-                <path d="M10 4 V10 M22 4 V10"/>
-                <circle cx="12" cy="21" r="1.5" fill="currentColor" stroke="none"/>
-                <circle cx="18" cy="21" r="1.5" fill="currentColor" stroke="none"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M8 5V3M16 5V3" />
               </svg>
             </div>
             <h3>Participate</h3>
-            <p>Join events, webinars and live training sessions.</p>
+            <p>
+              Join events, webinars and training sessions that keep you
+              current, connected and competitive.
+            </p>
             <a class="feature-link" href="/login?next=/dashboard">See events</a>
           </article>
 
+          <!-- Corporate -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="16" cy="16" r="14"/>
-                <rect x="9" y="14" width="14" height="11" rx="1.5"/>
-                <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14"/>
-                <path d="M14 25 V19 H18 V25"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="7" width="18" height="13" rx="2" />
+                <path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" />
+                <path d="M3 13h18" />
               </svg>
             </div>
             <h3>Corporate training</h3>
-            <p>Upskill teams with measurable programs and reports.</p>
+            <p>
+              Upskill teams with measurable programs, progress tracking
+              and consolidated reporting for your organization.
+            </p>
             <a class="feature-link" href="/register?role=corporate">Request a demo</a>
           </article>
 
+          <!-- Dashboard -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 4 H24 V22 H8 Z"/>
-                <path d="M12 9 H20 M12 13 H20 M12 17 H17"/>
-                <circle cx="21" cy="23" r="4"/>
-                <path d="M19 26 L18 31 L21 29 L24 31 L23 26"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="8" height="8" rx="1.5" />
+                <rect x="13" y="3" width="8" height="5" rx="1.5" />
+                <rect x="13" y="10" width="8" height="11" rx="1.5" />
+                <rect x="3" y="13" width="8" height="8" rx="1.5" />
               </svg>
             </div>
             <h3>Your dashboard</h3>
-            <p>Track enrollments, progress and certificates in one view.</p>
+            <p>
+              Track enrollments, progress, certificates and upcoming
+              sessions from a single personalized view.
+            </p>
             <a class="feature-link" href="/dashboard">Open dashboard</a>
           </article>
 
+          <!-- API -->
           <article class="feature-card">
             <div class="icon" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 6l-5 6 5 6M16 6l5 6-5 6M14 4l-4 16" />
               </svg>
             </div>
             <h3>Open API</h3>
-            <p>Integrate ExpertHub into your tools with a clean JSON API.</p>
+            <p>
+              Integrate ExpertHub into your own tools with a clean,
+              session-authenticated JSON API.
+            </p>
             <a class="feature-link" href="/api/health" target="_blank" rel="noopener">Explore API</a>
           </article>
 
@@ -228,72 +696,101 @@
     </section>
 
     <!-- ----------------------------------------------------------------
-         Audiences — uses the .audience-card component
+         Stats strip
          ---------------------------------------------------------------- -->
     <section class="landing-section">
       <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="kicker">Built for you</span>
-          <h2>One platform, four roles.</h2>
-          <p>Every role gets a tailored dashboard and the right permissions for the work they do.</p>
+        <div class="stat-strip">
+          <div class="stat-cell">
+            <div class="stat-value">4</div>
+            <span class="stat-label">User roles supported</span>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">100%</div>
+            <span class="stat-label">Session-authenticated</span>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">24/7</div>
+            <span class="stat-label">Hosted on Render</span>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-value">v1</div>
+            <span class="stat-label">API version</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------
+         Audiences — one card per role, linked to register with the role
+         ---------------------------------------------------------------- -->
+    <section class="landing-section" id="audiences">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Built for you</div>
+          <h2>Pick the path that fits your goals.</h2>
+          <p>
+            Every role gets a tailored dashboard, curated content and
+            the right permissions for the work they do.
+          </p>
         </div>
 
-        <div class="grid" data-reveal>
+        <div class="audience-grid">
 
           <article class="audience-card">
-            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M8 12 L16 8 L24 12 L16 16 Z"/>
-              <path d="M11 14 V20 C11 22 13 23 16 23 C19 23 21 22 21 20 V14"/>
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 12 L16 8 L24 12 L16 16 Z" />
+              <path d="M11 14 V20 C11 22 13 23 16 23 C19 23 21 22 21 20 V14" />
             </svg>
             <h3>Students</h3>
             <ul>
               <li>Enroll in expert-led courses</li>
-              <li>Track lessons, quizzes, assignments</li>
+              <li>Track lessons, quizzes and assignments</li>
               <li>Earn certificates and badges</li>
+              <li>Book one-to-one consultations</li>
             </ul>
           </article>
 
           <article class="audience-card">
-            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="16" cy="13" r="3"/>
-              <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24"/>
-              <path d="M22 9 L24 11 L28 7"/>
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="16" cy="13" r="3" />
+              <path d="M10 24 C10 20 13 18 16 18 C19 18 22 20 22 24" />
+              <path d="M22 9 L24 11 L28 7" />
             </svg>
             <h3>Experts</h3>
             <ul>
-              <li>Publish courses and content</li>
-              <li>Set availability and take bookings</li>
+              <li>Publish courses and manage content</li>
+              <li>Set availability and book consultations</li>
               <li>Track earnings and reviews</li>
+              <li>Build a professional profile</li>
             </ul>
           </article>
 
           <article class="audience-card">
-            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="9" y="14" width="14" height="11" rx="1.5"/>
-              <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14"/>
-              <path d="M14 25 V19 H18 V25"/>
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="14" width="14" height="11" rx="1.5" />
+              <path d="M11 14 V10 A1 1 0 0 1 12 9 H20 A1 1 0 0 1 21 10 V14" />
+              <path d="M14 25 V19 H18 V25" />
             </svg>
             <h3>Corporate</h3>
             <ul>
-              <li>Enroll employees in programs</li>
+              <li>Enroll employees in training programs</li>
               <li>Track progress across departments</li>
               <li>Access consolidated reports</li>
+              <li>Manage invoices and subscriptions</li>
             </ul>
           </article>
 
           <article class="audience-card">
-            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M16 8 L24 11 V16 C24 20 20 23 16 24 C12 23 8 20 8 16 V11 Z"/>
-              <path d="M12 15 L15 18 L21 12"/>
+            <svg class="role-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8 L24 11 V16 C24 20 20 23 16 24 C12 23 8 20 8 16 V11 Z" />
+              <path d="M12 15 L15 18 L21 12" />
             </svg>
             <h3>Administrators</h3>
             <ul>
               <li>Manage users, roles and permissions</li>
-              <li>Publish content and monitor payments</li>
+              <li>Publish courses, events and resources</li>
+              <li>Monitor payments and subscriptions</li>
               <li>Review audit logs and analytics</li>
             </ul>
           </article>
@@ -303,82 +800,80 @@
     </section>
 
     <!-- ----------------------------------------------------------------
-         Platform status — pings /health every 30s
+         Live status + API endpoints
          ---------------------------------------------------------------- -->
-    <section class="landing-section" id="status" data-reveal>
+    <section class="landing-section" id="status">
       <div class="container">
         <div class="section-head">
-          <span class="kicker">Live</span>
-          <h2>Platform status</h2>
-          <p>Backend health is checked every 30 seconds.</p>
+          <div class="kicker">Live</div>
+          <h2>Platform status &amp; API</h2>
+          <p>
+            ExpertHub exposes a small, predictable JSON API. The panel
+            below checks the live backend every 30 seconds.
+          </p>
         </div>
 
-        <div class="stats">
-          <div class="stat">
-            <span class="stat-num" id="status-dot">—</span>
-            <span>Backend</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num" id="status-time">—</span>
-            <span>Server time</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num" id="status-env">—</span>
-            <span>Environment</span>
-          </div>
-        </div>
-      </div>
-    </section>
+        <div class="status-panel">
 
-    <!-- ----------------------------------------------------------------
-         API endpoints
-         ---------------------------------------------------------------- -->
-    <section class="landing-section" data-reveal>
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">Developers</span>
-          <h2>Available endpoints</h2>
-          <p>A small, predictable JSON API behind session authentication.</p>
-        </div>
+          <div class="status-box">
+            <h3>Backend status</h3>
 
-        <ul class="endpoint-list" style="max-width:560px">
-          <li>
-            <a href="/health" target="_blank" rel="noopener">
-              <span class="method">GET</span>
-              <span>/health</span>
-            </a>
-          </li>
-          <li>
-            <a href="/api/health" target="_blank" rel="noopener">
-              <span class="method">GET</span>
-              <span>/api/health</span>
-            </a>
-          </li>
-          <li>
-            <a href="/api/courses" target="_blank" rel="noopener">
-              <span class="method">GET</span>
-              <span>/api/courses</span>
-            </a>
-          </li>
-          <li>
-            <a href="/api/auth/me" target="_blank" rel="noopener">
-              <span class="method">GET</span>
-              <span>/api/auth/me</span>
-            </a>
-          </li>
-          <li>
-            <a href="/login">
-              <span class="method post">POST</span>
-              <span>/login</span>
-            </a>
-          </li>
-          <li>
-            <a href="/register">
-              <span class="method post">POST</span>
-              <span>/register</span>
-            </a>
-          </li>
-        </ul>
+            <div class="status-indicator">
+              <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+              <span id="statusText">Checking…</span>
+            </div>
+
+            <p class="status-meta" id="statusMeta">—</p>
+
+            <button class="btn btn-sm" type="button" id="refreshStatus">
+              Refresh now
+            </button>
+          </div>
+
+          <div class="status-box">
+            <h3>Available endpoints</h3>
+
+            <ul class="endpoint-list">
+              <li>
+                <a href="/health" target="_blank" rel="noopener">
+                  <span class="method">GET</span>
+                  <span>/health</span>
+                </a>
+              </li>
+              <li>
+                <a href="/api/health" target="_blank" rel="noopener">
+                  <span class="method">GET</span>
+                  <span>/api/health</span>
+                </a>
+              </li>
+              <li>
+                <a href="/api/courses" target="_blank" rel="noopener">
+                  <span class="method">GET</span>
+                  <span>/api/courses</span>
+                </a>
+              </li>
+              <li>
+                <a href="/api/auth/me" target="_blank" rel="noopener">
+                  <span class="method">GET</span>
+                  <span>/api/auth/me</span>
+                </a>
+              </li>
+              <li>
+                <a href="/login" >
+                  <span class="method post">POST</span>
+                  <span>/login</span>
+                </a>
+              </li>
+              <li>
+                <a href="/register">
+                  <span class="method post">POST</span>
+                  <span>/register</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
       </div>
     </section>
 
@@ -387,7 +882,7 @@
          ---------------------------------------------------------------- -->
     <section class="landing-section">
       <div class="container">
-        <div class="final-cta" data-reveal>
+        <div class="final-cta">
           <h2>Ready to turn expertise into progress?</h2>
           <p>
             Create a free account and start learning, consulting or
@@ -403,100 +898,120 @@
 
   </main>
 
-  <!-- =================================================================
+  <!-- ------------------------------------------------------------------
        Footer
-       ================================================================= -->
+       ------------------------------------------------------------------ -->
   <footer class="footer">
     <div class="container">
-      <span>&copy; <span data-year>2026</span> ExpertHub</span>
-      <span aria-hidden="true">·</span>
+      <span>&copy; <span id="year">2026</span> ExpertHub</span>
+      <span class="muted">·</span>
       <a href="/courses">Courses</a>
-      <span aria-hidden="true">·</span>
+      <span class="muted">·</span>
       <a href="/api/health" target="_blank" rel="noopener">API</a>
-      <span aria-hidden="true">·</span>
+      <span class="muted">·</span>
       <a href="/login">Sign in</a>
-      <span aria-hidden="true">·</span>
+      <span class="muted">·</span>
       <a href="/register">Get started</a>
     </div>
   </footer>
 
-  <!-- =================================================================
-       Scripts
-       =================================================================
-       app.js handles:
-         - year stamp on [data-year]
-         - flash auto-dismiss
-         - submit-button busy state
-         - CSRF token injection into fetch()
-         - reveal animation on [data-reveal]
-         - smooth scroll for #anchors
-         - external link hardening
-         - auto-load of /assets/js/<body data-page>.js
-       ================================================================= -->
-  <script src="/assets/js/app.js" defer></script>
-
-  <!-- =================================================================
-       Landing-page health poller
-       =================================================================
-       Kept inline because it only runs on this page. If you'd rather
-       move it, create /assets/js/home.js with the same code — the
-       <body data-page="home"> attribute will auto-load it.
-       ================================================================= -->
   <script>
-    (function () {
-      "use strict";
+    /* ------------------------------------------------------------------
+       Year stamp
+       ------------------------------------------------------------------ */
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-      function ready(fn) {
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", fn, { once: true });
-        } else {
-          fn();
+    /* ------------------------------------------------------------------
+       Live backend status
+       ------------------------------------------------------------------
+       Pings /health every 30 seconds and updates the indicator.
+       Falls back gracefully if the request fails.
+       ------------------------------------------------------------------ */
+    (function () {
+      var dot      = document.getElementById("statusDot");
+      var text     = document.getElementById("statusText");
+      var meta     = document.getElementById("statusMeta");
+      var refresh  = document.getElementById("refreshStatus");
+      var endpoint = "/health";
+
+      function setState(kind, label, detail) {
+        dot.className = "status-dot " + kind;
+        text.textContent = label;
+        meta.textContent = detail || "—";
+      }
+
+      async function check() {
+        setState("", "Checking…", "Contacting " + endpoint);
+
+        var started = performance.now();
+
+        try {
+          var res = await fetch(endpoint + "?t=" + Date.now(), {
+            headers: { Accept: "application/json" },
+            cache: "no-store"
+          });
+
+          var latency = Math.round(performance.now() - started);
+          var data = null;
+          try { data = await res.json(); } catch (_) { /* not JSON */ }
+
+          if (res.ok && data && data.success) {
+            setState(
+              "ok",
+              "Operational",
+              (data.service || "ExpertHub") +
+                " · " + latency + "ms · " +
+                new Date().toLocaleTimeString()
+            );
+          } else {
+            setState(
+              "warn",
+              "Degraded",
+              "HTTP " + res.status + " · " + latency + "ms"
+            );
+          }
+        } catch (err) {
+          setState(
+            "err",
+            "Unreachable",
+            (err && err.message) || "Network error"
+          );
         }
       }
 
-      ready(function () {
-        var dot  = document.getElementById("status-dot");
-        var time = document.getElementById("status-time");
-        var env  = document.getElementById("status-env");
-        if (!dot || !time || !env) return;
+      refresh.addEventListener("click", check);
 
-        function check() {
-          dot.textContent = "Checking…";
-          dot.style.color = "";
-          time.textContent = "—";
-          env.textContent = "—";
+      // Initial check + poll every 30s (only while tab is visible).
+      check();
 
-          fetch("/health", {
-            headers: { Accept: "application/json" },
-            cache: "no-store"
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-              if (data && data.success) {
-                dot.textContent = "Online";
-                dot.style.color = "var(--ok)";
-                time.textContent = new Date(data.time).toLocaleTimeString();
-                env.textContent = data.environment || "—";
-              } else {
-                dot.textContent = "Degraded";
-                dot.style.color = "var(--warn)";
-              }
-            })
-            .catch(function () {
-              dot.textContent = "Offline";
-              dot.style.color = "var(--danger)";
-            });
-        }
+      var timer = setInterval(function () {
+        if (!document.hidden) check();
+      }, 30000);
 
-        check();
-        setInterval(function () {
-          if (!document.hidden) check();
-        }, 30000);
-        document.addEventListener("visibilitychange", function () {
-          if (!document.hidden) check();
-        });
+      // Clean up if the page is hidden for a long time.
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) check();
+      });
+
+      window.addEventListener("pagehide", function () {
+        clearInterval(timer);
       });
     })();
+
+    /* ------------------------------------------------------------------
+       Smooth scrolling for in-page anchors
+       ------------------------------------------------------------------ */
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var id = a.getAttribute("href");
+        if (id.length < 2) return;
+        var target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        history.replaceState(null, "", id);
+      });
+    });
   </script>
 
 </body>
