@@ -1,1 +1,3 @@
-require('http').get(`http://localhost:${process.env.PORT||3000}/health`,r=>{console.log('HTTP',r.statusCode);process.exit(r.statusCode===200?0:1)}).on('error',e=>{console.error(e.message);process.exit(1)});
+require("dotenv").config();
+const db=require("../app/config/database");
+(async()=>{try{await db.ping();console.log('ExpertHub database: OK')}catch(e){console.error('ExpertHub database: FAILED',e.message);process.exitCode=1}finally{await db.close()}})();
