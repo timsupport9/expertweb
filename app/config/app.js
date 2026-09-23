@@ -1,390 +1,462 @@
 /**
  * ============================================================
- * EXPERTHUB — EXPRESS APPLICATION FACTORY
+ * EXPERTHUB — BACKEND EXPRESS APPLICATION
  * ============================================================
  *
  * File:
  *     app/config/app.js
  *
- * Serves:
- *     /assets/*   →  public/assets/*
- *     /uploads/*  →  public/uploads/*
- *     /downloads/* → public/downloads/*
- *     /           →  public/index.html  (guests only)
+ * PURPOSE:
+ *     Backend/API application only.
  *
- * Does NOT start the HTTP server — that is server.js's job.
+ * IMPORTANT:
+ *     This file DOES NOT:
+ *       - serve frontend HTML
+ *       - serve CSS
+ *       - serve JavaScript
+ *       - serve images
+ *       - serve public/assets
+ *       - redirect users to /dashboard
+ *       - use Express sessions
+ *       - use flash messages
+ *       - use server-rendered pages
+ *
+ * FRONTEND:
+ *     The frontend communicates with this backend through:
+ *
+ *     /api
+ *     /api/v1
+ *
+ * EXAMPLE:
+ *
+ *     GET  /api/v1/health
+ *     POST /api/v1/auth/login
+ *     POST /api/v1/auth/register
+ *     GET  /api/v1/auth/me
+ *
+ * SERVER:
+ *     server.js is responsible for starting the HTTP server.
+ *
  * ============================================================
  */
 
-const path = require("path");
-const fs = require("fs");
+"use strict";
+
 const express = require("express");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
+const crypto = require("crypto");
 
-const { buildHelmetOptions, securityHeaders } = require("./security");
+/* ------------------------------------------------------------------
+ * Configuration
+ * ---------------------------------------------------------------- */
+
+const {
+  buildHelmetOptions,
+  securityHeaders,
+} = require("./security");
+
 const buildCorsOptions = require("./cors");
+
+/* ------------------------------------------------------------------
+ * Middleware
+ * ---------------------------------------------------------------- */
 
 const requestLogger = require("../middleware/requestLogger");
 const notFound = require("../middleware/notFound");
 const errorHandler = require("../middleware/errorHandler");
 
-const flash = require("../middleware/flash");
-const csrf = require("../middleware/csrf");
-const attachUser = require("../middleware/attachUser");
+/* ------------------------------------------------------------------
+ * Routes
+ * ---------------------------------------------------------------- */
 
 const routes = require("../routes");
 
 /* ------------------------------------------------------------------
- * Constants
+ * Application
  * ---------------------------------------------------------------- */
 
 const app = express();
-const isProd = (process.env.NODE_ENV || "development") === "production";
 
-/**
- * Absolute path to the public/ folder.
- *
- * __dirname        = <root>/app/config
- * ../../public     = <root>/public
- *
- * On Render this resolves to: /opt/render/project/src/public
- */
-const publicDir = path.resolve(__dirname, "../../public");
-const assetsDir = path.join(publicDir, "assets");
+const isProduction =
+  (process.env.NODE_ENV || "development").toLowerCase() === "production";
 
 /* ==================================================================
- * BOOT-TIME VERIFICATION
- * ==================================================================
- * Runs once when this module is first required (i.e. when the server
- * starts). Prints an obvious log line for each critical path so that
- * a misconfigured deploy shows up immediately in the Render logs
- * instead of silently returning 404s to every visitor.
+ * APPLICATION IDENTITY
  * ================================================================== */
 
-function verifyAssets() {
-  const lines = [];
-
-  lines.push("");
-  lines.push("╔══════════════════════════════════════════════════════════╗");
-  lines.push("║  ExpertHub — asset verification                          ║");
-  lines.push("╚══════════════════════════════════════════════════════════╝");
-  lines.push(`  publicDir:  ${publicDir}`);
-  lines.push(`  assetsDir:  ${assetsDir}`);
-  lines.push("");
-
-  if (!fs.existsSync(publicDir)) {
-    lines.push("  ✗ public/ DIRECTORY NOT FOUND");
-    lines.push("    → Did you push the public/ folder to git?");
-    lines.push("    → Is the working directory correct?");
-  } else {
-    lines.push("  ✓ public/ exists");
-  }
-
-  if (!fs.existsSync(assetsDir)) {
-    lines.push("  ✗ public/assets/ DIRECTORY NOT FOUND");
-    lines.push("    → Create it and push:");
-    lines.push("        git add public/assets");
-  } else {
-    lines.push("  ✓ public/assets/ exists");
-
-    const css = path.join(assetsDir, "css", "style.css");
-    const appJs = path.join(assetsDir, "js", "app.js");
-    const homeJs = path.join(assetsDir, "js", "home.js");
-    const logo = path.join(assetsDir, "img", "logo.svg");
-
-    const checks = [
-      ["css/style.css", css],
-      ["js/app.js", appJs],
-      ["js/home.js", homeJs],
-      ["img/logo.svg", logo],
-    ];
-
-    for (const [label, file] of checks) {
-      if (fs.existsSync(file)) {
-        const stat = fs.statSync(file);
-        lines.push(`  ✓ public/assets/${label}  (${stat.size} bytes)`);
-      } else {
-        lines.push(`  ✗ public/assets/${label}  MISSING`);
-      }
-    }
-  }
-
-  lines.push("");
-
-  // Print once, on a single block so it isn't interleaved with the
-  // logger's line format.
-  console.log(lines.join("\n"));
-}
-
-verifyAssets();
-
-/* ------------------------------------------------------------------
- * 1. Core configuration
- * ---------------------------------------------------------------- */
-
 app.disable("x-powered-by");
+
+/*
+ * Required when deployed behind Render, Nginx, Cloudflare,
+ * load balancers or another reverse proxy.
+ */
 app.set("trust proxy", 1);
 
-/* ------------------------------------------------------------------
- * 2. Security headers
- * ---------------------------------------------------------------- */
+/*
+ * Disable Express view engine because this is an API backend.
+ */
+app.set("view engine", false);
 
-app.use(helmet(buildHelmetOptions()));
+/* ==================================================================
+ * REQUEST ID
+ * ==================================================================
+ *
+ * Every request receives a unique ID.
+ *
+ * This makes it much easier to trace:
+ *
+ *   frontend request
+ *        ↓
+ *   Render log
+ *        ↓
+ *   controller
+ *        ↓
+ *   database
+ *
+ * The frontend can also read:
+ *
+ *     X-Request-ID
+ *
+ * ================================================================== */
+
+app.use((req, res, next) => {
+  const incomingId = req.headers["x-request-id"];
+
+  const requestId =
+    typeof incomingId === "string" && incomingId.length <= 128
+      ? incomingId
+      : crypto.randomUUID();
+
+  req.id = requestId;
+
+  res.setHeader("X-Request-ID", requestId);
+
+  next();
+});
+
+/* ==================================================================
+ * SECURITY HEADERS
+ * ================================================================== */
+
+app.use(
+  helmet(
+    buildHelmetOptions({
+      isProduction,
+    })
+  )
+);
+
 app.use(securityHeaders);
 
-/* ------------------------------------------------------------------
- * 3. CORS
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * CORS
+ * ==================================================================
+ *
+ * The frontend is hosted separately.
+ *
+ * Example:
+ *
+ *     Frontend:
+ *     https://experthub-frontend.onrender.com
+ *
+ *     Backend:
+ *     https://experthub-backend.onrender.com
+ *
+ * CORS is therefore required.
+ *
+ * Configure allowed frontend origins in environment variables.
+ * ================================================================== */
 
 app.use(cors(buildCorsOptions()));
 
-/* ------------------------------------------------------------------
- * 4. Body parsing & compression
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * COMPRESSION
+ * ================================================================== */
 
-app.use(compression());
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true, limit: "2mb" }));
-app.use(cookieParser());
+app.use(
+  compression({
+    threshold: 1024,
+  })
+);
 
-/* ------------------------------------------------------------------
- * 5. Request logging
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * BODY PARSING
+ * ==================================================================
+ *
+ * JSON is the normal API format.
+ *
+ * URL encoded data is retained for compatibility with forms
+ * and selected integrations.
+ * ================================================================== */
+
+app.use(
+  express.json({
+    limit: process.env.JSON_BODY_LIMIT || "2mb",
+    strict: true,
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: process.env.URLENCODED_BODY_LIMIT || "2mb",
+  })
+);
+
+/* ==================================================================
+ * COOKIE PARSER
+ * ==================================================================
+ *
+ * Useful if authentication uses HTTP-only cookies.
+ *
+ * The backend remains API-only; cookies are simply one possible
+ * authentication transport.
+ * ================================================================== */
+
+app.use(cookieParser(process.env.COOKIE_SECRET || undefined));
+
+/* ==================================================================
+ * REQUEST LOGGER
+ * ================================================================== */
 
 app.use(requestLogger);
 
-/* ------------------------------------------------------------------
- * 6. Session stack
- * ---------------------------------------------------------------- */
-
-app.use(
-  require("express-session")({
-    name: process.env.SESSION_NAME || "experthub.sid",
-    secret:
-      process.env.SESSION_SECRET || "dev-only-secret-change-me-please",
-    resave: false,
-    saveUninitialized: false,
-    proxy: isProd,
-    cookie: {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      maxAge: Number(
-        process.env.SESSION_MAX_AGE_MS || 7 * 24 * 60 * 60 * 1000
-      ),
-    },
-  })
-);
-
-app.use(flash());
-app.use(csrf());
-app.use(attachUser());
-
 /* ==================================================================
- * 7. STATIC ASSETS
+ * API HEALTH CHECK
  * ==================================================================
  *
- * The three lines below are the entire link between the app and the
- * public/assets folder:
+ * This endpoint does not require authentication.
  *
- *     /assets/css/style.css   →  public/assets/css/style.css
- *     /assets/js/app.js       →  public/assets/js/app.js
- *     /assets/images/logo.svg    →  public/assets/images/logo.svg
+ * Useful for:
  *
- * If a file is missing, express.static calls next(), and the request
- * falls through to the routes — which return HTML, not the file.
- * That's why a missing CSS file looks like "assets not loading".
+ *     Render
+ *     Uptime monitoring
+ *     Deployment testing
+ *     Frontend connection testing
  *
- * `fallthrough: false` on a diagnostic sub-mount is deliberately NOT
- * used here because it would break the /  handler for missing paths.
- * ================================================================== */
-
-// /assets → public/assets
-app.use(
-  "/assets",
-  express.static(assetsDir, {
-    maxAge: isProd ? "30d" : 0,
-    immutable: isProd,
-    etag: true,
-    lastModified: true,
-    index: false,
-  })
-);
-
-// /uploads/<sub> → public/uploads/<sub>
-const publicUploadDirs = [
-  "avatars",
-  "courses",
-  "blog",
-  "events",
-  "resources",
-  "certificates",
-];
-
-for (const sub of publicUploadDirs) {
-  app.use(
-    `/uploads/${sub}`,
-    express.static(path.join(publicDir, "uploads", sub), {
-      maxAge: isProd ? "7d" : 0,
-      etag: true,
-    })
-  );
-}
-
-// /downloads → public/downloads
-app.use(
-  "/downloads",
-  express.static(path.join(publicDir, "downloads"), {
-    maxAge: isProd ? "7d" : 0,
-  })
-);
-
-/* ------------------------------------------------------------------
- * 8. Blocked paths (must run before the general static mount)
- * ---------------------------------------------------------------- */
-
-app.use(["/uploads/private", "/uploads/temp"], (req, res) =>
-  res.status(404).end()
-);
-
-/* ------------------------------------------------------------------
- * 9. Root-level static files
- * ----------------------------------------------------------------
- * Serves favicon.ico, robots.txt, sitemap.xml, site.webmanifest,
- * browserconfig.xml, humans.txt, .well-known/*.
+ * GET /health
  *
- * index: false so that `/` is handled explicitly below.
- * ---------------------------------------------------------------- */
-
-app.use(
-  express.static(publicDir, {
-    index: false,
-    maxAge: isProd ? "1h" : 0,
-    etag: true,
-    setHeaders(res, filePath) {
-      if (filePath.endsWith(".html")) {
-        res.setHeader("Cache-Control", "no-cache");
-      }
-    },
-  })
-);
-
-/* ==================================================================
- * 10. DIAGNOSTIC ENDPOINTS
- * ==================================================================
- * Two endpoints that let you verify what's actually being served
- * from the live server — no shell access required.
- *
- *     GET /health          → existing health check
- *     GET /assets-status   → shows every critical file and its status
  * ================================================================== */
 
 app.get("/health", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
-    service: "ExpertHub",
+    service: "ExpertHub API",
     status: "ok",
     environment: process.env.NODE_ENV || "development",
-    time: new Date().toISOString(),
+    version: process.env.APP_VERSION || "1.0.0",
+    timestamp: new Date().toISOString(),
+    requestId: req.id,
   });
 });
 
-app.get("/assets-status", (req, res) => {
-  const targets = [
-    "css/style.css",
-    "js/app.js",
-    "js/home.js",
-    "js/forms.js",
-    "img/logo.svg",
-    "img/hero.svg",
-    "img/favicon.svg",
-    "img/icons/student.svg",
-    "img/icons/expert.svg",
-    "img/icons/corporate.svg",
-    "img/icons/admin.svg",
-    "img/icons/course.svg",
-    "img/icons/event.svg",
-    "img/icons/certificate.svg",
-    "img/icons/chat.svg",
-  ];
+/* ==================================================================
+ * API READINESS CHECK
+ * ==================================================================
+ *
+ * This endpoint can later be expanded to verify:
+ *
+ *     Database
+ *     Redis
+ *     Email
+ *     Storage
+ *     Payment services
+ *
+ * It deliberately does not expose secrets or connection details.
+ * ================================================================== */
 
-  const report = targets.map((rel) => {
-    const full = path.join(assetsDir, rel);
-    const exists = fs.existsSync(full);
-    let size = 0;
-    if (exists) {
-      try {
-        size = fs.statSync(full).size;
-      } catch {
-        size = -1;
-      }
-    }
-    return {
-      file: `/assets/${rel}`,
-      exists,
-      size,
-      localPath: full,
+app.get("/ready", async (req, res, next) => {
+  try {
+    const checks = {
+      api: true,
+      database: true,
     };
-  });
 
-  const missing = report.filter((r) => !r.exists);
+    /*
+     * If your database module exposes a health check, this section
+     * can be connected to it.
+     *
+     * Example later:
+     *
+     * const database = require("./database");
+     * checks.database = await database.healthCheck();
+     */
 
-  res.status(missing.length ? 500 : 200).json({
-    publicDir,
-    assetsDir,
-    publicExists: fs.existsSync(publicDir),
-    assetsExists: fs.existsSync(assetsDir),
-    total: report.length,
-    missing: missing.length,
-    files: report,
+    const ready = Object.values(checks).every(Boolean);
+
+    return res.status(ready ? 200 : 503).json({
+      success: ready,
+      status: ready ? "ready" : "not_ready",
+      service: "ExpertHub API",
+      checks,
+      timestamp: new Date().toISOString(),
+      requestId: req.id,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/* ==================================================================
+ * API INFORMATION
+ * ==================================================================
+ *
+ * Gives the frontend/developer a simple way to verify which API
+ * version the backend exposes.
+ *
+ * GET /api
+ *
+ * ================================================================== */
+
+app.get("/api", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "ExpertHub API",
+    version: process.env.API_VERSION || "v1",
+    status: "online",
+    documentation:
+      process.env.API_DOCS_URL || "/api/v1/docs",
+    endpoints: {
+      health: "/health",
+      readiness: "/ready",
+      api: "/api",
+      versionedApi: "/api/v1",
+    },
+    timestamp: new Date().toISOString(),
+    requestId: req.id,
   });
 });
 
-/* ------------------------------------------------------------------
- * 11. Landing page for /
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * WEBHOOK RAW-BODY NOTE
+ * ==================================================================
+ *
+ * Payment providers such as Stripe may require access to the raw
+ * request body for signature verification.
+ *
+ * Do NOT automatically put express.raw() globally here because that
+ * would interfere with normal JSON API requests.
+ *
+ * Payment-specific raw-body middleware should be placed on the
+ * individual webhook route.
+ * ================================================================== */
 
-app.get("/", (req, res, next) => {
-  if (req.user) {
-    return res.redirect("/dashboard");
-  }
+/* ==================================================================
+ * APPLICATION ROUTES
+ * ==================================================================
+ *
+ * All backend routes are mounted here.
+ *
+ * Recommended route structure:
+ *
+ *     /api/v1/auth
+ *     /api/v1/users
+ *     /api/v1/students
+ *     /api/v1/experts
+ *     /api/v1/corporates
+ *     /api/v1/admin
+ *     /api/v1/courses
+ *     /api/v1/consultations
+ *     /api/v1/appointments
+ *     /api/v1/events
+ *     /api/v1/payments
+ *     /api/v1/notifications
+ *     /api/v1/messages
+ *     /api/v1/search
+ *
+ * The routes module should handle these.
+ * ================================================================== */
 
-  const indexPath = path.join(publicDir, "index.html");
+app.use("/api", routes);
 
-  if (!fs.existsSync(indexPath)) {
-    return res
-      .status(500)
-      .type("html")
-      .send(
-        "<h1>Configuration error</h1>" +
-        "<p>public/index.html is missing on the server.</p>" +
-        "<p>Push it to your git repository and redeploy.</p>"
-      );
-  }
+/* ==================================================================
+ * OPTIONAL API VERSION ALIAS
+ * ==================================================================
+ *
+ * If your routes currently expect /api/v1 directly, the routes
+ * module can expose the version internally.
+ *
+ * Recommended:
+ *
+ *     routes/index.js
+ *
+ *     router.use("/v1", apiV1Routes)
+ *
+ * Result:
+ *
+ *     /api/v1/auth/login
+ *     /api/v1/courses
+ *     /api/v1/experts
+ *
+ * ================================================================== */
 
-  res.sendFile(indexPath, (err) => {
-    if (err) return next(err);
+/* ==================================================================
+ * BACKEND ROOT
+ * ==================================================================
+ *
+ * Since this server is backend-only, "/" returns JSON instead of
+ * trying to serve index.html.
+ * ================================================================== */
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "ExpertHub Backend API",
+    status: "online",
+    message: "ExpertHub backend is running successfully.",
+    api: "/api",
+    version: process.env.API_VERSION || "v1",
+    health: "/health",
+    readiness: "/ready",
+    timestamp: new Date().toISOString(),
+    requestId: req.id,
   });
 });
 
-/* ------------------------------------------------------------------
- * 12. Application routes
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * API 404 HANDLER
+ * ==================================================================
+ *
+ * Handles requests that do not match an API route.
+ * ================================================================== */
 
-app.use(routes);
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: "API_ROUTE_NOT_FOUND",
+        message: "The requested API endpoint does not exist.",
+        path: req.originalUrl,
+        method: req.method,
+        requestId: req.id,
+      },
+    });
+  }
 
-/* ------------------------------------------------------------------
- * 13. Terminal handlers
- * ---------------------------------------------------------------- */
+  next();
+});
+
+/* ==================================================================
+ * GENERAL 404 HANDLER
+ * ================================================================== */
 
 app.use(notFound);
+
+/* ==================================================================
+ * CENTRAL ERROR HANDLER
+ * ==================================================================
+ *
+ * This must remain the LAST middleware.
+ * ================================================================== */
+
 app.use(errorHandler);
 
-/* ------------------------------------------------------------------
- * 14. Export
- * ---------------------------------------------------------------- */
+/* ==================================================================
+ * EXPORT
+ * ================================================================== */
 
 module.exports = app;
